@@ -2,4 +2,25 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <!-- PRIMARY -->
+    <color name="primary_main">#EF8749</color>
+
+    <!-- BACKGROUND -->
+    <color name="background_main">#1C2231</color>
+
+    <!-- SURFACE -->
+    <color name="surface_main">#21293C</color>
+    <color name="surface_glass">#21293C</color>
+    <color name="surface_deep">#283452</color>
+
+    <!-- TEXT -->
+    <color name="text_main">#FFFFFF</color>
+    <color name="text_muted">#667391</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <!-- BORDER -->
+    <color name="border_main">#789DF8</color>
+
+    <!-- ICON -->
+    <color name="icon_main">#000000</color>
 </resources>
