@@ -1,7 +1,28 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Base.Theme.TicketBookingApp" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <style name="Theme.CinemaTickets" parent="Theme.Material3.Dark.NoActionBar">
+
+        <!-- Màu chính: dùng màu cam từ colors.xml -->
+        <item name="colorPrimary">@color/primary_main</item>
+        <item name="colorOnPrimary">@color/text_on_primary</item>
+
+        <!-- Nền màn hình -->
+        <item name="android:windowBackground">@color/background_main</item>
+
+        <!-- Màu bề mặt card, bottom sheet, toolbar... -->
+        <item name="colorSurface">@color/surface_main</item>
+        <item name="colorOnSurface">@color/text_main</item>
+
+        <!-- Text mặc định -->
+        <item name="android:textColor">@color/text_main</item>
+
+        <!-- Status bar & navigation bar -->
+        <item name="android:statusBarColor">@color/surface_deep</item>
+        <item name="android:navigationBarColor">@color/background_main</item>
+
+        <!-- Màu đường viền, outline -->
+        <item name="android:colorAccent">@color/border_main</item>
+
     </style>
+
 </resources>
