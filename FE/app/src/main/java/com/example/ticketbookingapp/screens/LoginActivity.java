@@ -27,10 +27,7 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login); // Ensure your XML file is named activity_login.xml
 
-        // 1. Initialize Views
         initializeViews();
-
-        // 2. Set Click Listeners
         setupListeners();
     }
 
@@ -54,8 +51,8 @@ public class LoginActivity extends AppCompatActivity {
         linkSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // Navigate to SignUpActivity (Create this activity if you haven't yet)
-                Toast.makeText(LoginActivity.this, "Navigate to Sign Up Screen", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
+                startActivity(intent);
             }
         });
 
