@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">TicketBookingApp</string>
+    <string name="home_now_in_cinemas">Now in cinemas</string>
+    <string name="home_search_desc">Search movies</string>
+    <string name="home_location_desc">Location selector</string>
+    <string name="home_location">Nur-Sultan</string>
+    <string name="home_login">Log in</string>
+
+
 </resources>
