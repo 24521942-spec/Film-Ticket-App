@@ -1,0 +1,59 @@
+package com.example.ticketbookingapp.adapters;
+
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.ListAdapter;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.example.ticketbookingapp.R;
+import com.example.ticketbookingapp.models.Movie;
+
+import java.util.List;
+
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
+    private List<Movie> movies;
+
+    public MovieAdapter(List<Movie> movies) {
+        this.movies = movies;
+    }
+
+    @NonNull
+    @Override
+    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_movie, parent, false);
+        return new MovieViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
+        Movie movie = movies.get(position);
+        holder.txtTitle.setText(movie.getTitle());
+        holder.txtGenre.setText(movie.getGenre());
+        holder.txtRating.setText(String.valueOf(movie.getRating()));
+
+    }
+
+    @Override
+    public  int getItemCount() {
+        return movies != null ? movies.size() : 0;
+    }
+
+    static class MovieViewHolder extends RecyclerView.ViewHolder {
+        ImageView imgPoster;
+        TextView txtTitle, txtGenre, txtRating;
+
+        public MovieViewHolder(@NonNull View itemView) {
+            super(itemView);
+            imgPoster = itemView.findViewById(R.id.imgPoster);
+            txtTitle = itemView.findViewById(R.id.txtTitle);
+            txtGenre = itemView.findViewById(R.id.txtGenre);
+            txtRating = itemView.findViewById(R.id.txtRating);
+        }
+    }
+}

@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_margin="0dp">
+
+    <!-- CARD POSTER + BADGE -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardPoster"
+        android:layout_width="match_parent"
+        android:layout_height="260dp"
+        android:layout_margin="0dp"
+        app:cardCornerRadius="18dp"
+        app:cardUseCompatPadding="false"
+        app:cardElevation="8dp"
+        app:cardBackgroundColor="@color/surface_main">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageView
+                android:id="@+id/imgPoster"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop"
+                android:adjustViewBounds="true"
+                android:src="@drawable/placeholder_poster" />
+
+            <TextView
+                android:id="@+id/txtRating"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|end"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_rating_badge"
+                android:paddingHorizontal="6dp"
+                android:paddingVertical="2dp"
+                android:text="8.1"
+                android:textColor="@color/text_on_primary"
+                android:textSize="12sp" />
+        </FrameLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- TEXT PHÍA DƯỚI, CÙNG NỀN VỚI BACKGROUND_MAIN -->
+    <TextView
+        android:id="@+id/txtTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="The Batman"
+        android:textColor="@color/text_main"
+        android:textStyle="bold"
+        android:textSize="14sp" />
+
+    <TextView
+        android:id="@+id/txtGenre"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginBottom="8dp"
+        android:text="Action"
+        android:textColor="@color/text_muted"
+        android:textSize="12sp" />
+</LinearLayout>
