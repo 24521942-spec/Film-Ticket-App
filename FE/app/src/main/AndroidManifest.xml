@@ -9,14 +9,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.TicketBookingApp">
 
-        <!-- HomeActivity (màn hình chính sau Splash) -->
-        <activity
-            android:name="com.example.ticketbookingapp.screens.HomeActivity"
-            android:exported="false" />
-
-        <!-- Splash (màn đầu tiên) -->
-        <activity
-            android:name="com.example.ticketbookingapp.screens.SplashActivity"
         <activity
             android:name=".screens.LoginActivity"
             android:exported="true">
@@ -26,9 +18,13 @@
             </intent-filter>
         </activity>
 
-    </application>
+        <activity
+            android:name="com.example.ticketbookingapp.screens.HomeActivity"
+            android:exported="false" />
 
-</manifest>
+        <activity
+            android:name="com.example.ticketbookingapp.screens.SplashActivity"
+            android:exported="false" />
 
         <activity
             android:name=".screens.RegisterActivity"
@@ -39,4 +35,5 @@
             android:exported="false" />
 
     </application>
+
 </manifest>
