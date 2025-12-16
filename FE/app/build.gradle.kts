@@ -7,6 +7,10 @@ android {
     compileSdk {
         version = release(36)
     }
+    buildFeatures {
+        // Kích hoạt View Binding
+        viewBinding = true
+    }
 
     defaultConfig {
         applicationId = "com.example.ticketbookingapp"
