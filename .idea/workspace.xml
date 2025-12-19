@@ -15,6 +15,16 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_info_box.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_seat_selector.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_session_button.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
@@ -60,6 +70,11 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_checkout.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_home.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
@@ -85,6 +100,26 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_seat_selection.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_splash.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/dialog_sort_sessions.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_cinema_group.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_info_row.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
@@ -95,7 +130,27 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_seat_single.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_session_by_time_row.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_session_row.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/layout_bottom_sheet_ticket.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/layout_status_bar.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
@@ -107,13 +162,17 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a508728-4670-4fa1-ad54-e8aa3fa44c77" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_date_selected.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_date_unselected.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_tag_border.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_cinema_group.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_session_row.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_info_box.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_seat_selector.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_checkout.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_seat_selection.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_seat_single.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/layout_bottom_sheet_ticket.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_home.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_home.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_login.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_login.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_movie_detail.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_movie_detail.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/values/colors.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/values/colors.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -214,9 +273,9 @@
     &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;movie&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;seat&quot;,
     &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App/FE/app/src/main/res/drawable&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App&quot;,
     &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
     &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
     &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
@@ -378,12 +437,12 @@
       <map>
         <entry key="com.example.ticketbookingapp">
           <value>
-            <CheckInfo lastCheckTimestamp="1765794129360" />
+            <CheckInfo lastCheckTimestamp="1766132503413" />
           </value>
         </entry>
         <entry key="com.example.ticketbookingapp.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1765794129362" />
+            <CheckInfo lastCheckTimestamp="1766132503412" />
           </value>
         </entry>
       </map>

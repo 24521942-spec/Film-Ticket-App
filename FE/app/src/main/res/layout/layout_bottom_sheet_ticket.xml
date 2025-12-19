@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="#1A2232"
+    android:paddingHorizontal="24dp"
+    android:paddingVertical="32dp">
+
+    <View
+        android:layout_width="40dp"
+        android:layout_height="4dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="24dp"
+        android:background="#334155" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Select ticket type"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:textColor="#F8FAFC" /> <TextView
+    android:id="@+id/txtSelectedSeatInfo"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="8th row, 7th seat"
+    android:textSize="14sp"
+    android:textColor="#94A3B8"
+    android:layout_marginTop="4dp"
+    android:layout_marginBottom="24dp"/>
+
+    <LinearLayout
+        android:id="@+id/layoutTypeAdult"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Adult"
+            android:textSize="16sp"
+            android:textColor="#E2E8F0"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="2200 ₸"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FC6D19"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2D3748"/>
+
+    <LinearLayout
+        android:id="@+id/layoutTypeChild"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Child"
+            android:textSize="16sp"
+            android:textColor="#E2E8F0"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1000 ₸"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FC6D19"/>
+    </LinearLayout>
+
+    <View android:layout_width="match_parent" android:layout_height="1dp" android:background="#2D3748"/>
+
+    <LinearLayout
+        android:id="@+id/layoutTypeStudent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:paddingVertical="16dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:background="?attr/selectableItemBackground">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Student"
+            android:textSize="16sp"
+            android:textColor="#E2E8F0"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1500 ₸"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            android:textColor="#FC6D19"/>
+    </LinearLayout>
+
+</LinearLayout>
