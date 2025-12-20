@@ -7,96 +7,94 @@
     android:layout_height="match_parent"
     android:background="@color/background_main">
 
-    <!-- TOP BAR -->
+    <ImageView
+        android:id="@+id/imgStatusBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        android:src="@drawable/status_bar"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
-        android:layout_width="412dp"
-        android:layout_height="98dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/surface_deep"
         android:paddingHorizontal="16dp"
         android:paddingTop="12dp"
         android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <!-- Location -->
-
-        <!-- Language -->
-
-        <!-- Login button -->
+        app:layout_constraintTop_toBottomOf="@id/imgStatusBar">
 
         <ImageView
             android:id="@+id/icLocation"
             android:layout_width="18dp"
             android:layout_height="18dp"
-            android:layout_marginStart="60dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginStart="8dp"
             android:src="@drawable/ic_location"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:tint="@color/black" />
 
         <TextView
             android:id="@+id/txtLocation"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginStart="8dp"
             android:text="Nur-Sultan"
             android:textColor="@color/text_main"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/icLocation" />
+            app:layout_constraintStart_toEndOf="@+id/icLocation"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/txtLang"
-            android:layout_width="33dp"
-            android:layout_height="29dp"
-            android:layout_marginBottom="4dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
             android:text="Eng"
             android:textColor="@color/text_main"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/btnLogin"
-            app:layout_constraintHorizontal_bias="0.344"
-            app:layout_constraintStart_toEndOf="@+id/txtLocation" />
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/btnLogin"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
             android:background="@drawable/bg_login_button"
-            android:text="@string/home_login"
+            android:text="Login"
             android:textAllCaps="false"
             android:textColor="@color/text_on_primary"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="1.0" />
-
+            app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- TITLE BAR (body area) -->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/titleBar"
-        android:layout_width="419dp"
-        android:layout_height="55dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/background_main"
         android:paddingHorizontal="16dp"
-        android:paddingTop="8dp"
-        android:paddingBottom="4dp"
+        android:paddingTop="16dp"
+        android:paddingBottom="8dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topBar">
 
         <TextView
             android:id="@+id/txtNow"
-            android:layout_width="150dp"
-            android:layout_height="32dp"
-            android:layout_marginTop="8dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:text="Now in cinemas"
             android:textColor="@color/text_main"
             android:textSize="20sp"
@@ -108,23 +106,19 @@
             android:id="@+id/icSearch"
             android:layout_width="22dp"
             android:layout_height="22dp"
-            android:layout_marginEnd="4dp"
             android:src="@drawable/ic_search"
             app:layout_constraintBottom_toBottomOf="@id/txtNow"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/txtNow"
             app:tint="@color/text_main" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <!-- MOVIE LIST -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMovies"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:paddingStart="16dp"
-        android:paddingEnd="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
+        android:paddingHorizontal="16dp"
         android:clipToPadding="false"
         app:layout_constraintTop_toBottomOf="@id/titleBar"
         app:layout_constraintBottom_toBottomOf="parent"

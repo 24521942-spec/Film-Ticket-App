@@ -23,4 +23,20 @@
 
     <!-- ICON -->
     <color name="icon_main">#000000</color>
+    <style name="OtpBoxStyle">
+        <item name="android:layout_width">50dp</item>
+        <item name="android:layout_height">50dp</item>
+        <item name="android:backgroundTint">#253554</item>
+        <item name="android:background">@drawable/bg_seat_selector</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:layout_margin">6dp</item>
+        <item name="android:inputType">number</item>
+    </style>
+    <color name="bg_dark">#1A1A1A</color> <color name="seat_available">#253554</color>
+    <color name="seat_selected_start">#FF8036</color>
+    <color name="seat_selected_end">#FC6D19</color>
+    <color name="surface_card">#2A2A2A</color> ```
 </resources>
