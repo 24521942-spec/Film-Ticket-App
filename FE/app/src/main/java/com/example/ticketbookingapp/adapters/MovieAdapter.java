@@ -36,6 +36,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.txtTitle.setText(movie.getTitle());
         holder.txtGenre.setText(movie.getGenre());
         holder.txtRating.setText(String.valueOf(movie.getRating()));
+        holder.itemView.setOnClickListener(v -> {
+            // v.getContext() lấy ra Context từ chính cái View đang hiển thị
+            android.content.Intent intent = new android.content.Intent(v.getContext(),
+                    com.example.ticketbookingapp.screens.MovieDetailActivity.class);
+
+            // Gửi dữ liệu phim sang màn hình Detail (để bên kia biết là đang xem phim nào)
+            intent.putExtra("movie_title", movie.getTitle());
+            intent.putExtra("movie_genre", movie.getGenre());
+            intent.putExtra("movie_rating", movie.getRating());
+
+            v.getContext().startActivity(intent);
+        });
 
     }
 
