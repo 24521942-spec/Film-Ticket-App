@@ -7,17 +7,6 @@
     android:layout_height="match_parent"
     android:background="@color/background_main">
 
-    <ImageView
-        android:id="@+id/imgStatusBar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:adjustViewBounds="true"
-        android:scaleType="fitXY"
-        android:src="@drawable/status_bar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/topBar"
         android:layout_width="0dp"
@@ -28,7 +17,7 @@
         android:paddingBottom="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/imgStatusBar">
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
             android:id="@+id/icLocation"
@@ -49,7 +38,7 @@
             android:text="Nur-Sultan"
             android:textColor="@color/text_main"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/icLocation"
+            app:layout_constraintStart_toEndOf="@id/icLocation"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
@@ -60,7 +49,7 @@
             android:text="Eng"
             android:textColor="@color/text_main"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/btnLogin"
+            app:layout_constraintEnd_toStartOf="@id/btnLogin"
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
@@ -77,7 +66,6 @@
             app:layout_constraintTop_toTopOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/titleBar"
@@ -112,7 +100,6 @@
             app:layout_constraintTop_toTopOf="@id/txtNow"
             app:tint="@color/text_main" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMovies"

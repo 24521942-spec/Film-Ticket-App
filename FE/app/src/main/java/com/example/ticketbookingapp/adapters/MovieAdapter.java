@@ -1,18 +1,16 @@
 package com.example.ticketbookingapp.adapters;
 
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
-import androidx.recyclerview.widget.ListAdapter;
 import androidx.recyclerview.widget.RecyclerView;
-
 import com.example.ticketbookingapp.R;
 import com.example.ticketbookingapp.models.Movie;
-
+import com.example.ticketbookingapp.screens.MovieDetailActivity;
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
@@ -25,8 +23,7 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @NonNull
     @Override
     public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_movie, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
         return new MovieViewHolder(view);
     }
 
@@ -36,23 +33,18 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
         holder.txtTitle.setText(movie.getTitle());
         holder.txtGenre.setText(movie.getGenre());
         holder.txtRating.setText(String.valueOf(movie.getRating()));
-        holder.itemView.setOnClickListener(v -> {
-            // v.getContext() lấy ra Context từ chính cái View đang hiển thị
-            android.content.Intent intent = new android.content.Intent(v.getContext(),
-                    com.example.ticketbookingapp.screens.MovieDetailActivity.class);
 
-            // Gửi dữ liệu phim sang màn hình Detail (để bên kia biết là đang xem phim nào)
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(v.getContext(), MovieDetailActivity.class);
             intent.putExtra("movie_title", movie.getTitle());
             intent.putExtra("movie_genre", movie.getGenre());
             intent.putExtra("movie_rating", movie.getRating());
-
             v.getContext().startActivity(intent);
         });
-
     }
 
     @Override
-    public  int getItemCount() {
+    public int getItemCount() {
         return movies != null ? movies.size() : 0;
     }
 
