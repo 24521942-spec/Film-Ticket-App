@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.ticketbookingapp">
 
     <application
         android:allowBackup="true"
@@ -10,7 +11,7 @@
         android:theme="@style/Theme.TicketBookingApp">
 
         <activity
-            android:name=".screens.LoginActivity"
+            android:name=".screens.SplashActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -19,16 +20,26 @@
         </activity>
 
         <activity
-            android:name="com.example.ticketbookingapp.screens.HomeActivity"
-            android:exported="false" />
-
-        <activity
-            android:name="com.example.ticketbookingapp.screens.SplashActivity"
-            android:exported="false" />
+            android:name=".screens.LoginActivity"
+            android:exported="false"
+            android:windowSoftInputMode="adjustResize" />
 
         <activity
             android:name=".screens.RegisterActivity"
             android:exported="false" />
+
+        <activity
+            android:name=".screens.HomeActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".screens.MovieDetailActivity"
+            android:exported="false" />
+
+        <activity
+            android:name=".screens.SeatSelectionActivity"
+            android:exported="false"
+            android:screenOrientation="portrait" />
 
         <activity
             android:name=".screens.MainActivity"
