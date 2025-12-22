@@ -166,22 +166,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a508728-4670-4fa1-ad54-e8aa3fa44c77" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/SeatAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Cinema.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Seat.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Session.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/MovieDetailActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/SeatSelectionActivity.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/TicketTypeBottomSheet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/drawable/bg_seat_occupied.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_seat.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/AndroidManifest.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/MovieAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/MovieAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/layout_bottom_sheet_ticket.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/bottom_sheet_ticket_type.xml" afterDir="false" />
-    </list>
+    <list default="true" id="4a508728-4670-4fa1-ad54-e8aa3fa44c77" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
