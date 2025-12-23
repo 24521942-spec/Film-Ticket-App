@@ -7,5 +7,6 @@ import com.nhom9.movieBooking.model.BookingFood;
 
 @Repository
 public interface BookingFoodRepository extends JpaRepository<BookingFood, Integer>{
-    
+    void deleteByBookingBookingId(Integer bookingId);
+
 }

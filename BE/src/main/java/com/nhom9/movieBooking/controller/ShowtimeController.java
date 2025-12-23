@@ -11,9 +11,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.nhom9.movieBooking.dto.BookingRequestDto;
+import com.nhom9.movieBooking.dto.BookingResponseDto;
+import com.nhom9.movieBooking.dto.CheckoutPreviewRequestDto;
+import com.nhom9.movieBooking.dto.CheckoutPreviewResponseDto;
 import com.nhom9.movieBooking.dto.SeatDto;
 import com.nhom9.movieBooking.dto.ShowtimeDto;
 import com.nhom9.movieBooking.enums.HoldSeatsRequest;
+import com.nhom9.movieBooking.service.BookingService;
 import com.nhom9.movieBooking.service.SeatService;
 import com.nhom9.movieBooking.service.ShowtimeService;
 
@@ -22,11 +27,14 @@ import com.nhom9.movieBooking.service.ShowtimeService;
 public class ShowtimeController {
     private final ShowtimeService showtimeService;
     private final SeatService seatService;
+    private final BookingService bookingService;
 
-    public ShowtimeController(ShowtimeService showtimeService, SeatService seatService) {
-    this.showtimeService = showtimeService;
-    this.seatService = seatService;
-}
+    public ShowtimeController(BookingService bookingService, SeatService seatService, ShowtimeService showtimeService) {
+        this.bookingService = bookingService;
+        this.seatService = seatService;
+        this.showtimeService = showtimeService;
+    }
+
 
     @GetMapping
     public List<ShowtimeDto> getAllShowtimes() {
@@ -63,6 +71,25 @@ public class ShowtimeController {
                                 @RequestBody HoldSeatsRequest req) {
         int holdMinutes = (req.getHoldMinutes() == null ? 5 : req.getHoldMinutes());
         return seatService.holdSeats(showtimeId, req.getUserId(), req.getSeatIds(), holdMinutes);
+    }
+
+        
+    @PostMapping("/{showtimeId}/checkout/preview")
+    public CheckoutPreviewResponseDto previewCheckout(
+            @PathVariable Integer showtimeId,
+            @RequestBody CheckoutPreviewRequestDto req
+    ) {
+        return bookingService.previewCheckout(showtimeId, req);
+    }
+
+    @PostMapping("/{showtimeId}/checkout/confirm")
+    public BookingResponseDto confirmCheckout(
+            @PathVariable Integer showtimeId,
+            @RequestBody BookingRequestDto req
+    ) {
+        // ép showtimeId theo path để khỏi bị FE gửi sai
+        req.setShowtimeId(showtimeId);
+        return bookingService.checkoutFromHold(req); // hoặc bookingService.confirmFromHold(req)
     }
 
 

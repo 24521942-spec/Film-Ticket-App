@@ -3,12 +3,31 @@ package com.nhom9.movieBooking.repository;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import com.nhom9.movieBooking.model.BookingSeat;
 
 public interface  BookingseatRepository extends JpaRepository<BookingSeat, Integer> {
-    List<BookingSeat> findByShowtimeShowTimeIdAndBookingStatusBooking(Integer showtime, String statusBooking);
-    boolean existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBooking(
-        Integer showtimeId, Integer seatId, String statusBooking
-    );
+        boolean existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBookingIn(
+            Integer showtimeId, Integer seatId, List<String> lockedStatuses);
+
+        List<BookingSeat> findByShowtimeShowTimeIdAndBookingStatusBookingIn(
+            Integer showtimeId, List<String> statuses);
+        void deleteByBookingBookingId(Integer bookingId);
+
+        @Query("""
+                select bs
+                from BookingSeat bs
+                where bs.showtime.showTimeId = :showtimeId
+                and bs.booking.statusBooking in :statuses
+        """)
+        List<BookingSeat> findByShowtimeAndBookingStatusIn(
+                @Param("showtimeId") Integer showtimeId,
+                @Param("statuses") List<String> statuses
+        );
+
+        List<BookingSeat> findByBookingBookingId(Integer bookingId);
+
+
 }

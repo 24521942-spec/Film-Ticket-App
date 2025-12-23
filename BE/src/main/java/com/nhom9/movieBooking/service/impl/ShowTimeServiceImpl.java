@@ -15,6 +15,7 @@ import com.nhom9.movieBooking.dto.ShowtimeDto;
 import com.nhom9.movieBooking.enums.SeatStatus;
 import com.nhom9.movieBooking.mapper.SeatMapper;
 import com.nhom9.movieBooking.mapper.ShowtimeMapper;
+import com.nhom9.movieBooking.model.BookingSeat;
 import com.nhom9.movieBooking.model.Seat;
 import com.nhom9.movieBooking.model.SeatHold;
 import com.nhom9.movieBooking.model.ShowTime;
@@ -143,10 +144,10 @@ public class ShowTimeServiceImpl implements ShowtimeService{
             if (seat.getRoom() != null && !seat.getRoom().getRoomId().equals(roomId)) {
                 throw new RuntimeException("Seat " + seatId + " not in this showtime room");
             }
-
+            List<String> lockedStatuses = List.of("PAID", "PENDING_PAYMENT");
             // SOLD?
             boolean isSold = bookingseatRepository
-                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBooking(showtimeId, seatId, "PAID");
+                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBookingIn(showtimeId, seatId, lockedStatuses);
             if (isSold) throw new RuntimeException("Seat already sold: " + seat.getSeatCode());
 
             // HOLD còn hạn?
@@ -174,8 +175,63 @@ public class ShowTimeServiceImpl implements ShowtimeService{
 
     @Override
     public List<SeatDto> getSeatsByShowtime(Integer showtimeId) {
-        return seatService.getSeatByShowtime(showtimeId);
+        ShowTime showtime = showtimeRepository.findById(showtimeId)
+            .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+        LocalDateTime now = LocalDateTime.now();
+
+        // seat trong phòng của showtime
+        List<Seat> seats = seatRepository.findByRoomRoomId(showtime.getRoom().getRoomId());
+
+        // booking_seat của showtime (PAID hoặc PENDING_PAYMENT)
+        List<BookingSeat> bsList = bookingseatRepository.findByShowtimeAndBookingStatusIn(
+            showtimeId,
+            List.of("PAID", "PENDING_PAYMENT")
+        );
+
+        // map seatId -> bookingStatus
+        Map<Integer, String> seatIdToBookingStatus = bsList.stream()
+            .collect(Collectors.toMap(
+                bs -> bs.getSeat().getSeatId(),
+                bs -> bs.getBooking().getStatusBooking(),
+                (a, b) -> a
+            ));
+
+        return seats.stream().map(seat -> {
+
+            SeatStatus status;
+
+            // 1) PAID => SOLD
+            String bookingStatus = seatIdToBookingStatus.get(seat.getSeatId());
+            if ("PAID".equals(bookingStatus)) {
+                status = SeatStatus.SOLD;
+            }
+            // 2) PENDING_PAYMENT => LOCKED
+            else if ("PENDING_PAYMENT".equals(bookingStatus)) {
+                status = SeatStatus.LOCKED;
+            }
+            // 3) HOLD (chưa hết hạn)
+            else {
+                boolean holding = seatholdRepository
+                    .findFirstBySeatSeatIdAndShowtimeShowTimeIdAndExpireAtAfter(seat.getSeatId(), showtimeId, now)
+                    .isPresent();
+
+                status = holding ? SeatStatus.HOLD : SeatStatus.AVAILABLE;
+            }
+
+            // ✅ SeatDto của bạn không có constructor rỗng -> phải new đúng constructor
+            return new SeatDto(
+                seat.getSeatId(),
+                seat.getRowLabel(),
+                seat.getSeatCode(),
+                seat.getColLabel(),
+                seat.getSeatType(),
+                status
+            );
+
+        }).toList();
     }
+
 
     
 
