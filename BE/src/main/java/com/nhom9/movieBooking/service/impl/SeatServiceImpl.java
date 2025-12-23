@@ -27,6 +27,9 @@ import jakarta.transaction.Transactional;
 @Service
 public class SeatServiceImpl implements SeatService {
 
+    private static final String STATUS_PAID = "PAID";
+    private static final String STATUS_PENDING = "PENDING_PAYMENT";
+
     private final SeatRepository seatRepository;
     private final ShowTimeRepository showtimeRepository;
     private final SeatholdRepository seatholdRepository;
@@ -131,11 +134,14 @@ public class SeatServiceImpl implements SeatService {
 
         List<Seat> seats = seatRepository.findByRoomRoomId(roomId);
 
+        List<String> locked = List.of("PAID", "PENDING_PAYMENT");
+
         Set<Integer> soldSeatIds = bookingseatRepository
-                .findByShowtimeShowTimeIdAndBookingStatusBooking(showtimeId, "PAID")
-                .stream()
-                .map(bs -> bs.getSeat().getSeatId())
-                .collect(Collectors.toSet());
+            .findByShowtimeShowTimeIdAndBookingStatusBookingIn(showtimeId, locked)
+            .stream()
+            .map(bs -> bs.getSeat().getSeatId())
+            .collect(Collectors.toSet());
+
 
         Set<Integer> holdSeatIds = seatholdRepository
                 .findByShowtimeShowTimeIdAndExpireAtAfter(showtimeId, LocalDateTime.now())
@@ -193,35 +199,55 @@ public class SeatServiceImpl implements SeatService {
 
         LocalDateTime now = LocalDateTime.now();
 
-        // dọn hold hết hạn (repo của bạn có sẵn)
+        // dọn hold hết hạn
         List<SeatHold> expired = seatholdRepository.findByExpireAtBefore(now);
-        if (!expired.isEmpty()) seatholdRepository.deleteAll(expired);
+        if (!expired.isEmpty()) {
+            seatholdRepository.deleteAll(expired);
+        }
 
         Integer roomId = showtime.getRoom().getRoomId();
         LocalDateTime expireAt = now.plusMinutes(holdMinutes);
 
         List<SeatDto> result = new ArrayList<>();
+        List<String> lockedStatuses = List.of(STATUS_PAID, STATUS_PENDING);
 
         for (Integer seatId : seatIds) {
 
             Seat seat = seatRepository.findById(seatId)
                     .orElseThrow(() -> new RuntimeException("Seat not found: " + seatId));
 
-            // check seat thuộc đúng phòng của showtime
+            // seat thuộc đúng phòng
             if (seat.getRoom() != null && !seat.getRoom().getRoomId().equals(roomId)) {
                 throw new RuntimeException("Seat " + seatId + " not in this showtime room");
             }
 
-            // SOLD?
-            boolean isSold = bookingseatRepository
-                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBooking(showtimeId, seatId, "PAID");
-            if (isSold) throw new RuntimeException("Seat already sold: " + seat.getSeatCode());
+            // LOCKED/SOLD?
+            boolean isLockedOrSold = bookingseatRepository
+                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBookingIn(showtimeId, seatId, lockedStatuses);
+            if (isLockedOrSold) {
+                throw new RuntimeException("Seat already locked/sold: " + seat.getSeatCode());
+            }
 
-            // HOLD còn hạn?
-            boolean isHold = seatholdRepository
-                    .existsBySeatSeatIdAndShowtimeShowTimeIdAndExpireAtAfter(seatId, showtimeId, now);
-            if (isHold) throw new RuntimeException("Seat already hold: " + seat.getSeatCode());
+            // HOLD còn hạn? (nếu của mình thì gia hạn)
+            var existingHoldOpt = seatholdRepository
+                    .findFirstBySeatSeatIdAndShowtimeShowTimeIdAndExpireAtAfter(seatId, showtimeId, now);
 
+            if (existingHoldOpt.isPresent()) {
+                SeatHold existingHold = existingHoldOpt.get();
+
+                if (!existingHold.getUser().getUserId().equals(userId)) {
+                    throw new RuntimeException("Seat already hold: " + seat.getSeatCode());
+                }
+
+                // hold của chính user -> gia hạn
+                existingHold.setExpireAt(expireAt);
+                seatholdRepository.save(existingHold);
+
+                result.add(SeatMapper.toSeatDto(seat, SeatStatus.HOLD));
+                continue;
+            }
+
+            // tạo hold mới
             SeatHold sh = new SeatHold();
             sh.setSeat(seat);
             sh.setShowtime(showtime);

@@ -2,6 +2,7 @@ package com.nhom9.movieBooking.repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -17,4 +18,9 @@ public interface SeatholdRepository extends  JpaRepository<SeatHold, Integer>{
     void deleteByShowtimeShowTimeId(Integer showtimeId);
 
     List<SeatHold> findByUserUserIdAndShowtimeShowTimeIdAndExpireAtAfter(Integer userId, Integer showtimeId, LocalDateTime now);
+    Optional<SeatHold> findFirstBySeatSeatIdAndShowtimeShowTimeIdAndExpireAtAfter(
+        Integer seatId,
+        Integer showtimeId,
+        LocalDateTime now
+    );
 }

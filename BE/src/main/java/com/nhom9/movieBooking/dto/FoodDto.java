@@ -10,6 +10,8 @@ public class FoodDto {
 
     private int quantity;
 
+    public FoodDto() {}
+
     public FoodDto(int foodId, String foodName, String foodType, int quantity, BigDecimal unitPrice) {
         this.foodId = foodId;
         this.foodName = foodName;

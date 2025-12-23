@@ -2,6 +2,7 @@ package com.nhom9.movieBooking.service.impl;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -10,9 +11,13 @@ import org.springframework.stereotype.Service;
 
 import com.nhom9.movieBooking.dto.BookingRequestDto;
 import com.nhom9.movieBooking.dto.BookingResponseDto;
-import com.nhom9.movieBooking.dto.FoodDto;
+import com.nhom9.movieBooking.dto.CheckoutPreviewRequestDto;
+import com.nhom9.movieBooking.dto.CheckoutPreviewResponseDto;
+import com.nhom9.movieBooking.dto.FoodOrderItemDto;
+import com.nhom9.movieBooking.dto.PaymentSuccessRequest;
 import com.nhom9.movieBooking.dto.SeatDto;
 import com.nhom9.movieBooking.enums.SeatStatus;
+import com.nhom9.movieBooking.mapper.SeatMapper;
 import com.nhom9.movieBooking.model.Booking;
 import com.nhom9.movieBooking.model.BookingFood;
 import com.nhom9.movieBooking.model.BookingSeat;
@@ -36,6 +41,10 @@ import jakarta.transaction.Transactional;
 @Service
 public class BookingServiceImpl implements BookingService {
 
+    private static final String STATUS_PENDING = "PENDING_PAYMENT";
+    private static final String STATUS_PAID = "PAID";
+    private static final String STATUS_CANCELLED = "CANCELLED";
+
     private final UserRepository userRepository;
     private final ShowTimeRepository showtimeRepository;
     private final SeatholdRepository seatholdRepository;
@@ -53,7 +62,8 @@ public class BookingServiceImpl implements BookingService {
             SeatRepository seatRepository,
             SeatholdRepository seatholdRepository,
             ShowTimeRepository showtimeRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository
+    ) {
         this.bookingRepository = bookingRepository;
         this.bookingfoodRepository = bookingfoodRepository;
         this.bookingseatRepository = bookingseatRepository;
@@ -64,94 +74,91 @@ public class BookingServiceImpl implements BookingService {
         this.foodRepository = foodRepository;
     }
 
+    // =========================
+    // 1) CONFIRM CHECKOUT
+    // =========================
     @Override
     @Transactional
     public BookingResponseDto checkoutFromHold(BookingRequestDto req) {
+
         Integer userId = req.getUserId();
         Integer showtimeId = req.getShowtimeId();
+        LocalDateTime now = LocalDateTime.now();
+
+        if (userId == null) throw new RuntimeException("userId is required");
+        if (showtimeId == null) throw new RuntimeException("showtimeId is required");
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
-
         ShowTime showtime = showtimeRepository.findById(showtimeId)
                 .orElseThrow(() -> new RuntimeException("Showtime not found"));
 
-        LocalDateTime now = LocalDateTime.now();
+        List<Integer> seatIds = req.getSeatIds();
+        if (seatIds == null || seatIds.isEmpty()) throw new RuntimeException("Seat list is empty");
 
-        // 1) Lấy các ghế đang HOLD còn hạn của user trong showtime
+        // 1) Lấy HOLD còn hạn
         List<SeatHold> holds = seatholdRepository
                 .findByUserUserIdAndShowtimeShowTimeIdAndExpireAtAfter(userId, showtimeId, now);
 
-        if (holds.isEmpty()) {
-            throw new RuntimeException("No seats held or hold expired");
-        }
-
-        // 2) Validate seatIds gửi lên
-        List<Integer> seatIds = req.getSeats();
-        if (seatIds == null || seatIds.isEmpty()) {
-            throw new RuntimeException("Seat list is empty");
-        }
+        if (holds.isEmpty()) throw new RuntimeException("No seats held or hold expired");
 
         Set<Integer> heldSeatIds = holds.stream()
                 .map(h -> h.getSeat().getSeatId())
                 .collect(Collectors.toSet());
 
         for (Integer seatId : seatIds) {
-            if (!heldSeatIds.contains(seatId)) {
-                throw new RuntimeException("Seat not held: " + seatId);
-            }
+            if (!heldSeatIds.contains(seatId)) throw new RuntimeException("Seat not held: " + seatId);
         }
 
-        // 3) Tạo BOOKING
+        // 2) Check ghế đã LOCK bởi booking (PAID hoặc PENDING)
+        List<String> lockedStatuses = List.of(STATUS_PAID, STATUS_PENDING);
+        for (Integer seatId : seatIds) {
+            boolean lockedSeat = bookingseatRepository
+                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBookingIn(showtimeId, seatId, lockedStatuses);
+            if (lockedSeat) throw new RuntimeException("Seat already locked: " + seatId);
+        }
+
+        // 3) Tạo BOOKING = PENDING_PAYMENT
         Booking booking = new Booking();
         booking.setUser(user);
         booking.setShowtime(showtime);
         booking.setCreatedAt(now);
-
-        // DEMO: set PAID luôn
-        booking.setStatusBooking("PAID");
+        booking.setStatusBooking(STATUS_PENDING);
         booking.setTotalTickets(seatIds.size());
-
         booking = bookingRepository.save(booking);
 
-        // 4) BOOKING_SEAT
+        // 4) Insert BOOKING_SEAT (khóa ghế)
         BigDecimal seatTotal = BigDecimal.ZERO;
-        BigDecimal seatPrice = showtime.getBasePrice();
+        BigDecimal seatPrice = showtime.getBasePrice() == null ? BigDecimal.ZERO : showtime.getBasePrice();
 
         for (Integer seatId : seatIds) {
-
-            // ✅ Check SOLD (đúng thứ tự tham số: showtimeId, seatId, status)
-            boolean alreadySold = bookingseatRepository
-                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBooking(showtimeId, seatId, "PAID");
-            if (alreadySold) {
-                throw new RuntimeException("Seat already sold: " + seatId);
-            }
-
             Seat seat = seatRepository.findById(seatId)
-                    .orElseThrow(() -> new RuntimeException("Seat not found"));
+                    .orElseThrow(() -> new RuntimeException("Seat not found: " + seatId));
 
             BookingSeat bs = new BookingSeat();
             bs.setBooking(booking);
             bs.setShowtime(showtime);
             bs.setSeat(seat);
-            bs.setSeatPrice(seatPrice); // nhớ: BookingSeat phải có field + setter này
+            bs.setSeatPrice(seatPrice);
 
             bookingseatRepository.save(bs);
             seatTotal = seatTotal.add(seatPrice);
         }
 
-        // 5) BOOKING_FOOD
+        // 5) Insert BOOKING_FOOD
         BigDecimal foodTotal = BigDecimal.ZERO;
 
         if (req.getFoodItems() != null) {
-            for (FoodDto item : req.getFoodItems()) {
-                Food food = foodRepository.findById(item.getFoodId())
-                        .orElseThrow(() -> new RuntimeException("Food not found: " + item.getFoodId()));
+            for (FoodOrderItemDto item : req.getFoodItems()) {
+                if (item == null || item.getFoodId() == null) continue;
 
                 int qty = item.getQuantity();
                 if (qty <= 0) continue;
 
-                BigDecimal unitPrice = food.getUnitPrice();
+                Food food = foodRepository.findById(item.getFoodId())
+                        .orElseThrow(() -> new RuntimeException("Food not found: " + item.getFoodId()));
+
+                BigDecimal unitPrice = food.getUnitPrice() == null ? BigDecimal.ZERO : food.getUnitPrice();
                 BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(qty));
 
                 BookingFood bf = new BookingFood();
@@ -166,39 +173,214 @@ public class BookingServiceImpl implements BookingService {
             }
         }
 
-        BigDecimal totalPay = seatTotal.add(foodTotal);
-        booking.setTotalPay(totalPay);
+        // 6) Update totalPay
+        booking.setTotalPay(seatTotal.add(foodTotal));
         bookingRepository.save(booking);
 
-        // 6) Xoá HOLD sau khi đã checkout
+        // 7) Xoá HOLD đã dùng (để HOLD không chặn nữa)
         List<SeatHold> toDelete = holds.stream()
                 .filter(h -> seatIds.contains(h.getSeat().getSeatId()))
                 .toList();
         seatholdRepository.deleteAll(toDelete);
 
-        // 7) ✅ Build List<SeatDto> theo BookingResponseDto của bạn
+        // 8) Response: seat = LOCKED (đang pending)
         List<SeatDto> seatDtos = seatIds.stream()
-                .map(id -> {
-                    Seat s = seatRepository.findById(id)
-                            .orElseThrow(() -> new RuntimeException("Seat not found"));
-                    return new SeatDto(
-                            s.getColLabel(),
-                            s.getRowLabel(),
-                            s.getSeatCode(),
-                            s.getSeatId(),
-                            s.getSeatType(),
-                            SeatStatus.SOLD
-                    );
-                })
+                .map(id -> seatRepository.findById(id)
+                        .orElseThrow(() -> new RuntimeException("Seat not found: " + id)))
+                .map(seat -> SeatMapper.toSeatDto(seat, SeatStatus.LOCKED))
                 .toList();
 
         return new BookingResponseDto(
                 booking.getBookingId(),
-                "PAID",
+                "PENDING",
                 seatDtos,
                 showtimeId,
                 booking.getStatusBooking(),
                 userId
         );
     }
+
+    // =========================
+    // 2) PREVIEW CHECKOUT
+    // =========================
+    @Override
+    public CheckoutPreviewResponseDto previewCheckout(Integer showtimeId, CheckoutPreviewRequestDto req) {
+        if (showtimeId == null) throw new RuntimeException("showtimeId is required");
+        if (req.getUserId() == null) throw new RuntimeException("userId is required");
+        if (req.getSeatIds() == null || req.getSeatIds().isEmpty()) throw new RuntimeException("seatIds is empty");
+
+        Integer userId = req.getUserId();
+        LocalDateTime now = LocalDateTime.now();
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        ShowTime showtime = showtimeRepository.findById(showtimeId)
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+        // 1) check HOLD còn hạn
+        List<SeatHold> holds = seatholdRepository
+                .findByUserUserIdAndShowtimeShowTimeIdAndExpireAtAfter(userId, showtimeId, now);
+
+        if (holds.isEmpty()) throw new RuntimeException("No seats held or hold expired");
+
+        Set<Integer> heldSeatIds = holds.stream()
+                .map(h -> h.getSeat().getSeatId())
+                .collect(Collectors.toSet());
+
+        for (Integer seatId : req.getSeatIds()) {
+            if (!heldSeatIds.contains(seatId)) throw new RuntimeException("Seat not held: " + seatId);
+        }
+
+        // 2) seats response
+        List<SeatDto> seatDtos = new ArrayList<>();
+        BigDecimal seatTotal = BigDecimal.ZERO;
+        BigDecimal seatPrice = showtime.getBasePrice() == null ? BigDecimal.ZERO : showtime.getBasePrice();
+
+        for (Integer seatId : req.getSeatIds()) {
+            Seat seat = seatRepository.findById(seatId)
+                    .orElseThrow(() -> new RuntimeException("Seat not found: " + seatId));
+
+            seatDtos.add(SeatMapper.toSeatDto(seat, SeatStatus.HOLD));
+            seatTotal = seatTotal.add(seatPrice);
+        }
+
+        // 3) food lines
+        List<CheckoutPreviewResponseDto.FoodLineDto> foodLines = new ArrayList<>();
+        BigDecimal foodTotal = BigDecimal.ZERO;
+
+        if (req.getFoodItems() != null) {
+            for (CheckoutPreviewRequestDto.FoodItemDto item : req.getFoodItems()) {
+                if (item == null || item.getFoodId() == null) continue;
+                int qty = item.getQuantity() == null ? 0 : item.getQuantity();
+                if (qty <= 0) continue;
+
+                Food food = foodRepository.findById(item.getFoodId())
+                        .orElseThrow(() -> new RuntimeException("Food not found: " + item.getFoodId()));
+
+                BigDecimal unitPrice = food.getUnitPrice() == null ? BigDecimal.ZERO : food.getUnitPrice();
+                BigDecimal lineTotal = unitPrice.multiply(BigDecimal.valueOf(qty));
+
+                CheckoutPreviewResponseDto.FoodLineDto line = new CheckoutPreviewResponseDto.FoodLineDto();
+                line.setFoodId(food.getFoodId());
+                line.setFoodName(food.getFoodName());
+                line.setUnitPrice(unitPrice);
+                line.setQuantity(qty);
+                line.setLineTotal(lineTotal);
+
+                foodLines.add(line);
+                foodTotal = foodTotal.add(lineTotal);
+            }
+        }
+
+        CheckoutPreviewResponseDto res = new CheckoutPreviewResponseDto();
+        res.setUserId(user.getUserId());
+        res.setShowtimeId(showtimeId);
+        res.setSeats(seatDtos);
+        res.setFoods(foodLines);
+        res.setSeatTotal(seatTotal);
+        res.setFoodTotal(foodTotal);
+        res.setTotalPay(seatTotal.add(foodTotal));
+        return res;
+    }
+
+    // =========================
+    // 3) PAY SUCCESS
+    // =========================
+    @Override
+    @Transactional
+    public BookingResponseDto paySuccess(Integer bookingId, PaymentSuccessRequest req) {
+
+        if (bookingId == null) throw new RuntimeException("bookingId is required");
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!STATUS_PENDING.equals(booking.getStatusBooking())) {
+            throw new RuntimeException("Booking not in PENDING_PAYMENT");
+        }
+
+        booking.setStatusBooking(STATUS_PAID);
+        bookingRepository.save(booking);
+
+        // Load seats from booking_seat để trả về SOLD
+        List<BookingSeat> bookingSeats = bookingseatRepository.findByBookingBookingId(bookingId);
+
+        List<SeatDto> seatDtos = bookingSeats.stream()
+                .map(BookingSeat::getSeat)
+                .map(seat -> SeatMapper.toSeatDto(seat, SeatStatus.SOLD))
+                .toList();
+
+        return new BookingResponseDto(
+                booking.getBookingId(),
+                "PAID",
+                seatDtos,
+                booking.getShowtime().getShowTimeId(),
+                booking.getStatusBooking(),
+                booking.getUser().getUserId()
+        );
+    }
+
+    // =========================
+    // 4) CANCEL
+    // =========================
+    @Override
+    @Transactional
+    public BookingResponseDto cancel(Integer bookingId) {
+
+        if (bookingId == null) throw new RuntimeException("bookingId is required");
+
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!STATUS_PENDING.equals(booking.getStatusBooking())) {
+            throw new RuntimeException("Only PENDING_PAYMENT can be cancelled");
+        }
+
+        booking.setStatusBooking(STATUS_CANCELLED);
+        bookingRepository.save(booking);
+
+        // mở ghế: xoá booking_seat + booking_food
+        bookingseatRepository.deleteByBookingBookingId(bookingId);
+        bookingfoodRepository.deleteByBookingBookingId(bookingId);
+
+        return new BookingResponseDto(
+                booking.getBookingId(),
+                STATUS_CANCELLED,
+                List.of(),
+                booking.getShowtime().getShowTimeId(),
+                booking.getStatusBooking(),
+                booking.getUser().getUserId()
+        );
+    }
+
+        @Override
+        @Transactional
+        public BookingResponseDto markPaid(Integer bookingId) {
+        // dùng chung logic với paySuccess nhưng không cần request
+        Booking booking = bookingRepository.findById(bookingId)
+                .orElseThrow(() -> new RuntimeException("Booking not found"));
+
+        if (!STATUS_PENDING.equals(booking.getStatusBooking())) {
+                throw new RuntimeException("Booking not in PENDING_PAYMENT");
+        }
+
+        booking.setStatusBooking(STATUS_PAID);
+        bookingRepository.save(booking);
+
+        // load seats để trả về SOLD
+        List<SeatDto> seatDtos = bookingseatRepository.findByBookingBookingId(bookingId).stream()
+                .map(BookingSeat::getSeat)
+                .map(seat -> SeatMapper.toSeatDto(seat, SeatStatus.SOLD))
+                .toList();
+
+        return new BookingResponseDto(
+                booking.getBookingId(),
+                "PAID",
+                seatDtos,
+                booking.getShowtime().getShowTimeId(),
+                booking.getStatusBooking(),
+                booking.getUser().getUserId()
+        );
+        }
 }

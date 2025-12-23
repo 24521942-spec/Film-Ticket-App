@@ -1,74 +1,30 @@
 package com.nhom9.movieBooking.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 public class BookingRequestDto {
-    private int userId;
-    private int showtimeId;
-    private List<Integer> seats;
-    private List<FoodDto> foodItems;
-    private String paymentMethod;
-    private BigDecimal totalAmount;
+    private Integer userId;
+    private Integer showtimeId;
+    private List<Integer> seatIds;
+    private List<FoodOrderItemDto> foodItems;
 
-    public BookingRequestDto(List<FoodDto> foodItems, String paymentMethod, List<Integer> seats, int showtimeId, BigDecimal totalAmount, int userId) {
-        this.foodItems = foodItems;
-        this.paymentMethod = paymentMethod;
-        this.seats = seats;
-        this.showtimeId = showtimeId;
-        this.totalAmount = totalAmount;
-        this.userId = userId;
-    }
+    public Integer getUserId() { return userId; }
+    public void setUserId(Integer userId) { this.userId = userId; }
 
-    public int getUserId() {
-        return userId;
-    }
+    public Integer getShowtimeId() { return showtimeId; }
+    public void setShowtimeId(Integer showtimeId) { this.showtimeId = showtimeId; }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+    public List<Integer> getSeatIds() { return seatIds; }
+    public void setSeatIds(List<Integer> seatIds) { this.seatIds = seatIds; }
 
-    public int getShowtimeId() {
-        return showtimeId;
-    }
-
-    public void setShowtimeId(int showtimeId) {
-        this.showtimeId = showtimeId;
-    }
-
-    public List<Integer> getSeats() {
-        return seats;
-    }
-
-    public void setSeats(List<Integer> seats) {
-        this.seats = seats;
-    }
-
-    public List<FoodDto> getFoodItems() {
+    public List<FoodOrderItemDto> getFoodItems() {
         return foodItems;
     }
 
-    public void setFoodItems(List<FoodDto> foodItems) {
+    public void setFoodItems(List<FoodOrderItemDto> foodItems) {
         this.foodItems = foodItems;
     }
 
-    public String getPaymentMethod() {
-        return paymentMethod;
-    }
-
-    public void setPaymentMethod(String paymentMethod) {
-        this.paymentMethod = paymentMethod;
-    }
-
-    public BigDecimal getTotalAmount() {
-        return totalAmount;
-    }
-
-    public void setTotalAmount(BigDecimal totalAmount) {
-        this.totalAmount = totalAmount;
-    }
-
-
-
     
 }
+
