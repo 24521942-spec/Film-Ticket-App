@@ -166,7 +166,12 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="4a508728-4670-4fa1-ad54-e8aa3fa44c77" name="Changes" comment="" />
+    <list default="true" id="4a508728-4670-4fa1-ad54-e8aa3fa44c77" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/SessionAdapter.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Session.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/MovieDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/MovieDetailActivity.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -229,9 +234,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="layoutResourceFile" />
         <option value="resourceFile" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -267,7 +272,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "add-logic",
+    "git-widget-placeholder": "fix-bug",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App",
     "project.structure.last.edited": "Modules",
