@@ -7,24 +7,15 @@ public class FilmDto {
     private int duration;
     private String ageRating;
     private String description;
-    private String director;
-    private String cast;
-    private String release; 
 
-    public FilmDto(String ageRating, String cast, String description, String director, int duration, int filmId, String genre, String release, String title) {
+    public FilmDto(String ageRating, int duration, int filmId, String genre, String title, String description) {
         this.ageRating = ageRating;
-        this.cast = cast;
-        this.description = description;
-        this.director = director;
         this.duration = duration;
         this.filmId = filmId;
         this.genre = genre;
-        this.release = release;
         this.title = title;
+        this.description = description;
     }
-
-
-   
     
 
     public int getFilmId() {
@@ -73,30 +64,6 @@ public class FilmDto {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public String getDirector() {
-        return director;
-    }
-
-    public void setDirector(String director) {
-        this.director = director;
-    }
-
-    public String getCast() {
-        return cast;
-    }
-
-    public void setCast(String cast) {
-        this.cast = cast;
-    }
-
-    public String getRelease() {
-        return release;
-    }
-
-    public void setRelease(String release) {
-        this.release = release;
     }
 
 

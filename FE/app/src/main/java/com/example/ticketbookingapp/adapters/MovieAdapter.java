@@ -6,26 +6,18 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.example.ticketbookingapp.R;
 import com.example.ticketbookingapp.models.Movie;
-import com.example.ticketbookingapp.network.dto.ApiMovie;
 import com.example.ticketbookingapp.screens.MovieDetailActivity;
-
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private final List<Movie> movies;
-    private final List<ApiMovie> apiMovies;
+    private List<Movie> movies;
 
-    public MovieAdapter(List<Movie> movies, List<ApiMovie> apiMovies) {
+    public MovieAdapter(List<Movie> movies) {
         this.movies = movies;
-        this.apiMovies = apiMovies;
     }
 
     @NonNull
@@ -38,38 +30,17 @@ public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHol
     @Override
     public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
         Movie movie = movies.get(position);
-        ApiMovie apiMovie = (apiMovies != null && apiMovies.size() > position) ? apiMovies.get(position) : null;
-
         holder.txtTitle.setText(movie.getTitle());
         holder.txtGenre.setText(movie.getGenre());
         holder.txtRating.setText(String.valueOf(movie.getRating()));
 
-        String url = movie.getPosterUrl();
-
-        // Không muốn sửa placeholder thì cứ bỏ placeholder đi để khỏi crash
-        if (url == null || url.trim().isEmpty()) {
-            holder.imgPoster.setImageResource(R.drawable.ic_back_arrow); // hoặc bất kỳ drawable có sẵn
-        } else {
-            Glide.with(holder.itemView.getContext())
-                    .load(url)
-                    .diskCacheStrategy(DiskCacheStrategy.ALL)
-                    .into(holder.imgPoster);
-        }
-
         holder.itemView.setOnClickListener(v -> {
-            int filmId = apiMovies.get(position).getFilmId(); // QUAN TRỌNG
             Intent intent = new Intent(v.getContext(), MovieDetailActivity.class);
-
-            intent.putExtra("film_id", filmId);
-            intent.putExtra("movie_title", movie.getTitle()); // optional
+            intent.putExtra("movie_title", movie.getTitle());
             intent.putExtra("movie_genre", movie.getGenre());
             intent.putExtra("movie_rating", movie.getRating());
-            intent.putExtra("movie_poster", movie.getPosterUrl());
-
             v.getContext().startActivity(intent);
         });
-
-
     }
 
     @Override

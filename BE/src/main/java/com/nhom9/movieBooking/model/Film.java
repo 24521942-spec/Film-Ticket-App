@@ -65,39 +65,24 @@ public class Film {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
-    @Column(name="director")
-    private String director;
-
-    @Column(name="cast_text")
-    private String castText;
-
-    @Column(name="release_date")
-    private LocalDate releaseDate;
-
-
     public Film() {
     }
 
-    public Film(String ageRating, String castText, LocalDateTime createdAt, String descriptionFilm, String director, Integer duration, LocalDate endDate, Integer filmId, String genre, String posterUrl, LocalDate releaseDate, List<Review> reviews, List<ShowTime> showtimes, LocalDate startDate, String title, LocalDateTime updatedAt) {
+    public Film(String ageRating, LocalDateTime createdAt, String descriptionFilm, Integer duration, LocalDate endDate, Integer filmId, String genre, String posterUrl, List<Review> reviews, List<ShowTime> showtimes, LocalDate startDate, String title, LocalDateTime updatedAt) {
         this.ageRating = ageRating;
-        this.castText = castText;
         this.createdAt = createdAt;
         this.descriptionFilm = descriptionFilm;
-        this.director = director;
         this.duration = duration;
         this.endDate = endDate;
         this.filmId = filmId;
         this.genre = genre;
         this.posterUrl = posterUrl;
-        this.releaseDate = releaseDate;
         this.reviews = reviews;
         this.showtimes = showtimes;
         this.startDate = startDate;
         this.title = title;
         this.updatedAt = updatedAt;
     }
-
-    
 
     public Integer getFilmId() {
         return filmId;
@@ -201,30 +186,6 @@ public class Film {
 
     public void setUpdatedAt(LocalDateTime updatedAt) {
         this.updatedAt = updatedAt;
-    }
-
-    public String getDirector() {
-        return director;
-    }
-
-    public void setDirector(String director) {
-        this.director = director;
-    }
-
-    public String getCastText() {
-        return castText;
-    }
-
-    public void setCastText(String castText) {
-        this.castText = castText;
-    }
-
-    public LocalDate getReleaseDate() {
-        return releaseDate;
-    }
-
-    public void setReleaseDate(LocalDate releaseDate) {
-        this.releaseDate = releaseDate;
     }
 
     

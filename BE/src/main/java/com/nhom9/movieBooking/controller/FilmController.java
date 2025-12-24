@@ -13,9 +13,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nhom9.movieBooking.dto.FilmDetailDto;
 import com.nhom9.movieBooking.dto.FilmDto;
-import com.nhom9.movieBooking.dto.MovieListDto;
 import com.nhom9.movieBooking.model.ShowTime;
 import com.nhom9.movieBooking.service.FilmService;
 import com.nhom9.movieBooking.service.ShowtimeService;
@@ -33,21 +31,15 @@ public class FilmController {
         this.showtimeService = showtimeService;
     }
 
-    // @GetMapping
-    // public List<FilmDto> getAllFilms() {
-    //     return filmService.getAllFilms();
-    // }
-
-    // @GetMapping("/{id}")
-    // public FilmDto getFilmById(@PathVariable Integer id) {
-    //     return filmService.getFilmById(id);
-    // }
-
-    @GetMapping("/{id}")
-    public FilmDetailDto getFilmDetail(@PathVariable Integer id) {
-        return filmService.getFilmDetail(id);
+    @GetMapping
+    public List<FilmDto> getAllFilms() {
+        return filmService.getAllFilms();
     }
 
+    @GetMapping("/{id}")
+    public FilmDto getFilmById(@PathVariable Integer id) {
+        return filmService.getFilmById(id);
+    }
 
     @PostMapping
     public FilmDto createFilm(@RequestBody FilmDto filmDto) {
@@ -62,11 +54,6 @@ public class FilmController {
     @DeleteMapping("/{id}")
     public void deleteFilm(@PathVariable Integer id) {
         filmService.deleteFilm(id);
-    }
-
-    @GetMapping
-    public List<MovieListDto> getMovies() {
-        return filmService.getMovieListForHome();
     }
 
     @GetMapping("/{filmId}/showtimes")
