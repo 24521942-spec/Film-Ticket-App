@@ -1,31 +1,55 @@
-package com.nhom9.movieBooking.dto;
+package com.example.ticketbookingapp.network.dto;
 
-public class FilmDto {
+public class ApiFilmDetail {
     private int filmId;
     private String title;
     private String genre;
     private int duration;
     private String ageRating;
     private String description;
+    private String posterUrl;
+
     private String director;
     private String cast;
-    private String release; 
+    private String release;
 
-    public FilmDto(String ageRating, String cast, String description, String director, int duration, int filmId, String genre, String release, String title) {
-        this.ageRating = ageRating;
-        this.cast = cast;
-        this.description = description;
-        this.director = director;
-        this.duration = duration;
+
+    public ApiFilmDetail(int filmId, String title, String genre, int duration, String ageRating, String description, String posterUrl, String director, String cast, String release) {
         this.filmId = filmId;
-        this.genre = genre;
-        this.release = release;
         this.title = title;
+        this.genre = genre;
+        this.duration = duration;
+        this.ageRating = ageRating;
+        this.description = description;
+        this.posterUrl = posterUrl;
+        this.director = director;
+        this.cast = cast;
+        this.release = release;
     }
 
+    public String getDirector() {
+        return director;
+    }
 
-   
-    
+    public void setDirector(String director) {
+        this.director = director;
+    }
+
+    public String getCast() {
+        return cast;
+    }
+
+    public void setCast(String cast) {
+        this.cast = cast;
+    }
+
+    public String getRelease() {
+        return release;
+    }
+
+    public void setRelease(String release) {
+        this.release = release;
+    }
 
     public int getFilmId() {
         return filmId;
@@ -75,34 +99,11 @@ public class FilmDto {
         this.description = description;
     }
 
-    public String getDirector() {
-        return director;
+    public String getPosterUrl() {
+        return posterUrl;
     }
 
-    public void setDirector(String director) {
-        this.director = director;
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
     }
-
-    public String getCast() {
-        return cast;
-    }
-
-    public void setCast(String cast) {
-        this.cast = cast;
-    }
-
-    public String getRelease() {
-        return release;
-    }
-
-    public void setRelease(String release) {
-        this.release = release;
-    }
-
-
-
-
-
-
-
 }

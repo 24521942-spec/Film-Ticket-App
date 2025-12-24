@@ -1,15 +1,25 @@
 package com.example.ticketbookingapp.screens;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.content.ContextCompat;
+
+import com.bumptech.glide.Glide;
 import com.example.ticketbookingapp.R;
+import com.example.ticketbookingapp.network.ApiClient;
+import com.example.ticketbookingapp.network.ApiService;
+import com.example.ticketbookingapp.network.dto.ApiFilmDetail;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MovieDetailActivity extends AppCompatActivity {
 
@@ -18,15 +28,27 @@ public class MovieDetailActivity extends AppCompatActivity {
     private TextView tabAbout, tabSessions, txtMovieTitle;
     private View lineAbout, lineSessions;
 
+    private int filmId = -1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detail);
 
         initViews();
-        handleIntentData();
-        setupInfoRows(); // Thiết lập nội dung cho Director, Cast...
+        readIntent();
         setupEventListeners();
+
+        // hiển thị tạm title nếu có (optional)
+        String movieTitle = getIntent().getStringExtra("movie_title");
+        if (movieTitle != null) txtMovieTitle.setText(movieTitle);
+
+        // gọi BE lấy detail
+        if (filmId != -1) {
+            fetchFilmDetail(filmId);
+        } else {
+            Toast.makeText(this, "Missing film_id", Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void initViews() {
@@ -41,17 +63,73 @@ public class MovieDetailActivity extends AppCompatActivity {
         showAboutTab();
     }
 
-    private void setupInfoRows() {
-        // Ánh xạ và set text cho từng dòng dựa trên ID trong file activity_movie_detail.xml
-        setRowData(findViewById(R.id.infoDirector), "Director", "Matt Reeves");
-        setRowData(findViewById(R.id.infoCast), "Cast", "Robert Pattinson, Zoë Kravitz");
-        setRowData(findViewById(R.id.infoGenre), "Genre", "Action, Crime, Drama");
-        setRowData(findViewById(R.id.infoRuntime), "Runtime", "176 min");
-        setRowData(findViewById(R.id.infoRelease), "Release", "March 4, 2022");
-        setRowData(findViewById(R.id.infoCert), "Certificate", "PG-13");
+    private void readIntent() {
+        filmId = getIntent().getIntExtra("film_id", -1);
     }
 
-    // Hàm phụ để set text cho các dòng dùng chung layout item_info_row
+    private void fetchFilmDetail(int id) {
+        ApiService api = ApiClient.getClient().create(ApiService.class);
+
+        api.getFilmDetail(id).enqueue(new Callback<ApiFilmDetail>() {
+            @Override
+            public void onResponse(Call<ApiFilmDetail> call, Response<ApiFilmDetail> response) {
+                if (!response.isSuccessful() || response.body() == null) {
+                    Toast.makeText(MovieDetailActivity.this,
+                            "Load detail failed: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                ApiFilmDetail f = response.body();
+                bindFilmToUI(f);
+            }
+
+            @Override
+            public void onFailure(Call<ApiFilmDetail> call, Throwable t) {
+                Toast.makeText(MovieDetailActivity.this,
+                        "Error: " + t.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void bindFilmToUI(ApiFilmDetail f) {
+        txtMovieTitle.setText(f.getTitle());
+
+        // plot
+        TextView txtPlot = findViewById(R.id.txtPlot);
+        if (txtPlot != null) txtPlot.setText(safe(f.getDescription()));
+
+        // backdrop/poster (nếu bạn muốn dùng imgBackdrop)
+        ImageView imgBackdrop = findViewById(R.id.imgBackdrop);
+
+        String posterUrl = f.getPosterUrl();
+        if (posterUrl == null || posterUrl.trim().isEmpty()) {
+            imgBackdrop.setImageResource(android.R.drawable.ic_menu_report_image);
+        } else {
+            Glide.with(this)
+                    .load(posterUrl)
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(imgBackdrop);
+        }
+
+
+        setRowData(findViewById(R.id.infoGenre), "Genre", safe(f.getGenre()));
+        setRowData(findViewById(R.id.infoRuntime), "Runtime", f.getDuration() + " min");
+        setRowData(findViewById(R.id.infoCert), "Certificate", safe(f.getAgeRating()));
+
+        // BE chưa có thì tạm N/A
+        setRowData(findViewById(R.id.infoDirector), "Director", safe(f.getDirector()));
+        setRowData(findViewById(R.id.infoCast), "Cast", safe(f.getCast()));
+        setRowData(findViewById(R.id.infoRelease), "Release", safe(f.getRelease()));
+
+    }
+
+    private String safe(String s) {
+        return (s == null || s.trim().isEmpty()) ? "N/A" : s;
+    }
+
     private void setRowData(View rowView, String title, String value) {
         if (rowView != null) {
             TextView lblTitle = rowView.findViewById(R.id.lblInfoTitle);
@@ -61,27 +139,11 @@ public class MovieDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void handleIntentData() {
-        String movieTitle = getIntent().getStringExtra("movie_title");
-        if (movieTitle != null) {
-            txtMovieTitle.setText(movieTitle);
-        }
-    }
-
     private void setupEventListeners() {
         findViewById(R.id.btnBack).setOnClickListener(v -> finish());
         findViewById(R.id.tabAboutContainer).setOnClickListener(v -> showAboutTab());
         findViewById(R.id.tabSessionsContainer).setOnClickListener(v -> showSessionsTab());
         findViewById(R.id.btnSelectSession).setOnClickListener(v -> showSessionsTab());
-
-        // Mở màn hình chọn ghế
-        View rvSessions = findViewById(R.id.rvSessionsByTime);
-        if (rvSessions != null) {
-            rvSessions.setOnClickListener(v -> {
-                Intent intent = new Intent(this, SeatSelectionActivity.class);
-                startActivity(intent);
-            });
-        }
     }
 
     private void showAboutTab() {
@@ -101,4 +163,5 @@ public class MovieDetailActivity extends AppCompatActivity {
         tabAbout.setTextColor(ContextCompat.getColor(this, R.color.text_muted));
         lineAbout.setVisibility(View.INVISIBLE);
     }
+
 }
