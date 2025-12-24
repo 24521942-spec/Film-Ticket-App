@@ -1,17 +1,26 @@
 package com.nhom9.movieBooking.dto;
 
-public class FilmDto {
-    private int filmId;
+public class FilmDetailDto {
+    private Integer filmId;
     private String title;
     private String genre;
-    private int duration;
+    private String posterUrl;
+    private float rating;
+
+    private Integer duration;
     private String ageRating;
     private String description;
+
     private String director;
     private String cast;
-    private String release; 
+    private String release; // hoặc LocalDate releaseDate
 
-    public FilmDto(String ageRating, String cast, String description, String director, int duration, int filmId, String genre, String release, String title) {
+
+   
+
+    public FilmDetailDto() {}
+
+    public FilmDetailDto(String ageRating, String cast, String description, String director, Integer duration, Integer filmId, String genre, String posterUrl, float rating, String release, String title) {
         this.ageRating = ageRating;
         this.cast = cast;
         this.description = description;
@@ -19,19 +28,17 @@ public class FilmDto {
         this.duration = duration;
         this.filmId = filmId;
         this.genre = genre;
+        this.posterUrl = posterUrl;
+        this.rating = rating;
         this.release = release;
         this.title = title;
     }
 
-
-   
-    
-
-    public int getFilmId() {
+    public Integer getFilmId() {
         return filmId;
     }
 
-    public void setFilmId(int filmId) {
+    public void setFilmId(Integer filmId) {
         this.filmId = filmId;
     }
 
@@ -51,11 +58,27 @@ public class FilmDto {
         this.genre = genre;
     }
 
-    public int getDuration() {
+    public String getPosterUrl() {
+        return posterUrl;
+    }
+
+    public void setPosterUrl(String posterUrl) {
+        this.posterUrl = posterUrl;
+    }
+
+    public float getRating() {
+        return rating;
+    }
+
+    public void setRating(float rating) {
+        this.rating = rating;
+    }
+
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
@@ -99,10 +122,5 @@ public class FilmDto {
         this.release = release;
     }
 
-
-
-
-
-
-
+    
 }
