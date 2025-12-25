@@ -80,6 +80,11 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_food_combo.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_home.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
@@ -100,6 +105,11 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_preview_order.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_register.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
@@ -115,7 +125,17 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_ticket.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/bottom_sheet_ticket_type.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/dialog_momo_payment.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
@@ -126,6 +146,11 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_cinema_group.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_food.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
@@ -155,11 +180,6 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_session_row.xml">
-        <config>
-          <theme>@style/Theme.TicketBookingApp</theme>
-        </config>
-      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
@@ -167,10 +187,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a508728-4670-4fa1-ad54-e8aa3fa44c77" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/SessionAdapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/FoodAdapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/BookingOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Food.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/FoodComboActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/PreviewOrderActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/TicketActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_food_combo.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_preview_order.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_ticket.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/dialog_momo_payment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_food.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Session.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/MovieDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/MovieDetailActivity.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -234,9 +262,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
         <option value="resourceFile" />
         <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -272,7 +300,7 @@
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "fix-bug",
+    "git-widget-placeholder": "add__food",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App",
     "project.structure.last.edited": "Modules",
@@ -436,12 +464,12 @@
       <map>
         <entry key="com.example.ticketbookingapp">
           <value>
-            <CheckInfo lastCheckTimestamp="1766399104666" />
+            <CheckInfo lastCheckTimestamp="1766628894724" />
           </value>
         </entry>
         <entry key="com.example.ticketbookingapp.test">
           <value>
-            <CheckInfo lastCheckTimestamp="1766399104668" />
+            <CheckInfo lastCheckTimestamp="1766628894724" />
           </value>
         </entry>
       </map>

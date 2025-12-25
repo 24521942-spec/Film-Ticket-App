@@ -1,6 +1,8 @@
 package com.example.ticketbookingapp.screens;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.widget.ImageButton;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -20,17 +22,24 @@ public class SeatSelectionActivity extends AppCompatActivity {
     private List<Seat> seatList;
     private int totalPrice = 0;
     private MaterialButton btnBuy;
+    private ImageButton btnBack; // Thêm nút back
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_seat_selection);
 
+        // 1. Ánh xạ View
         btnBuy = findViewById(R.id.btnBuy);
+        btnBack = findViewById(R.id.btnBack); // Đảm bảo ID này trùng với XML
         recyclerSeats = findViewById(R.id.recyclerSeats);
+
+        // 2. Sự kiện nút Back
+        btnBack.setOnClickListener(v -> finish());
 
         updateTotalPrice(0);
 
+        // Khởi tạo dữ liệu ghế
         seatList = new ArrayList<>();
         for (int i = 1; i <= 64; i++) {
             int status = (Math.random() > 0.8) ? 1 : 0;
@@ -51,10 +60,10 @@ public class SeatSelectionActivity extends AppCompatActivity {
 
             } else if (seat.getStatus() == 2) {
                 seat.setStatus(0);
-
+                // Lưu ý: Logic trừ tiền cần khớp với loại vé đã chọn,
+                // ở đây tạm trừ giá cố định hoặc bạn cần lưu giá vào đối tượng Seat
                 totalPrice -= 2200;
                 if (totalPrice < 0) totalPrice = 0;
-
                 updateTotalPrice(totalPrice);
                 adapter.notifyDataSetChanged();
             }
@@ -62,14 +71,8 @@ public class SeatSelectionActivity extends AppCompatActivity {
 
         recyclerSeats.setAdapter(adapter);
 
-        btnBuy.setOnClickListener(v -> {
-            if (totalPrice > 0) {
-                Toast.makeText(this, "Payment successful: " + totalPrice + " ₸", Toast.LENGTH_LONG).show();
-                finish(); // Đóng màn hình chọn ghế, quay lại màn hình phim
-            } else {
-                Toast.makeText(this, "Please select at least one seat", Toast.LENGTH_SHORT).show();
-            }
-        });
+        // 3. Sự kiện nút Thanh toán (Chuyển sang màn hình Bắp nước/Preview)
+
     }
 
     private void updateTotalPrice(int price) {

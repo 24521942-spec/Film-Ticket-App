@@ -12,7 +12,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 public class TicketTypeBottomSheet extends BottomSheetDialogFragment {
 
-    private String seatId;
+    private String seatId;   
     private OnTicketTypeSelectedListener listener;
 
     public interface OnTicketTypeSelectedListener {
