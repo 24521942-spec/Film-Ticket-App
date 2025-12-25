@@ -15,5 +15,6 @@ public interface BookingService {
     BookingResponseDto markPaid(Integer bookingId);
     BookingResponseDto paySuccess(Integer bookingId, PaymentSuccessRequest req);
     BookingResponseDto cancel(Integer bookingId);
+    
 
 }

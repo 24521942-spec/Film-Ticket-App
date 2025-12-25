@@ -14,7 +14,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nhom9.movieBooking.dto.FilmDto;
+import com.nhom9.movieBooking.dto.MovieListDto;
 import com.nhom9.movieBooking.model.ShowTime;
+import com.nhom9.movieBooking.repository.ShowTimeRepository;
 import com.nhom9.movieBooking.service.FilmService;
 import com.nhom9.movieBooking.service.ShowtimeService;
 
@@ -25,10 +27,12 @@ public class FilmController {
 
     private final ShowtimeService showtimeService;
     private final FilmService filmService;
+    private final ShowTimeRepository showtimeRepository;
 
-    public FilmController(FilmService filmService, ShowtimeService showtimeService) {
+    public FilmController(ShowTimeRepository showtimeRepository, FilmService filmService, ShowtimeService showtimeService) {
         this.filmService = filmService;
         this.showtimeService = showtimeService;
+        this.showtimeRepository = showtimeRepository;
     }
 
     @GetMapping
@@ -56,15 +60,41 @@ public class FilmController {
         filmService.deleteFilm(id);
     }
 
-    @GetMapping("/{filmId}/showtimes")
-    public List<ShowTime> getShowtimeByFilm(@PathVariable Integer filmId) {
-        return showtimeService.getAllShowtimeByFilmId(filmId);
-    }
+    // @GetMapping("/{filmId}/showtimes")
+    // public List<ShowTime> getShowtimeByFilm(@PathVariable Integer filmId) {
+    //     return showtimeService.getAllShowtimeByFilmId(filmId);
+    // }
 
     @GetMapping("/{filmId}/showtimes/sorted")
     public Map<String, List<LocalDateTime>> getShowtimeByFilmSorted(@PathVariable Integer filmId) {
         return showtimeService.getShowtimeByFilmGroupByCinema(filmId);
     }
+
+    @GetMapping("/{filmId}/showtimes")
+    public List<ShowtimeBriefDto> getShowtimesByFilm(@PathVariable Integer filmId) {
+            List<ShowTime> sts = showtimeRepository.findByFilmFilmId(filmId);
+
+            return sts.stream().map(st -> {
+                String cinemaName = null;
+                String roomName = null;
+
+                if (st.getRoom() != null) {
+                    roomName = st.getRoom().getRoomName();
+                    if (st.getRoom().getCinema() != null) {
+                        cinemaName = st.getRoom().getCinema().getCineName();
+                    }
+                }
+
+                return new ShowtimeBriefDto(
+                        st.getShowTimeId(),
+                        st.getStartTime() != null ? st.getStartTime().toString() : null,
+                        st.getBasePrice(),
+                        cinemaName,
+                        roomName
+                );
+            }).toList();
+        }
+
 
 
 

@@ -1,119 +1,96 @@
 package com.example.ticketbookingapp.screens;
 
-import android.app.DatePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Spinner;
+import android.util.Patterns;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ticketbookingapp.R;
+import com.example.ticketbookingapp.network.ApiClient;
+import com.example.ticketbookingapp.network.ApiService;
+import com.example.ticketbookingapp.network.dto.AuthResponse;
+import com.example.ticketbookingapp.network.dto.RegisterRequest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
-import java.util.Calendar;
-import java.util.Locale;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class RegisterActivity extends AppCompatActivity {
 
-    private TextInputEditText nameInput, emailInput, dobInput, phoneInput, passwordInput;
-    private Spinner countryCodeSpinner;
+    private TextInputEditText fullNameInput, emailInput, passwordInput;
     private MaterialButton btnRegister;
-    private TextView linkLogin;
-
-    private final int REGISTER_LAYOUT_RES_ID = R.layout.activity_register;
-
-    private final Class<LoginActivity> LOGIN_ACTIVITY_CLASS = LoginActivity.class;
+    private TextView linkSignIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(REGISTER_LAYOUT_RES_ID);
+        setContentView(R.layout.activity_register);
 
-        initializeViews();
-
-        setupCountryCodeSpinner();
-
-        setupListeners();
-    }
-
-    private void initializeViews() {
-        nameInput = findViewById(R.id.nameInput);
+        // ĐỔI ID cho đúng với activity_register.xml của bạn
+        fullNameInput = findViewById(R.id.nameInput);
         emailInput = findViewById(R.id.emailInput);
-        dobInput = findViewById(R.id.dobInput);
-        phoneInput = findViewById(R.id.phoneInput);
         passwordInput = findViewById(R.id.passwordInput);
-        countryCodeSpinner = findViewById(R.id.countryCodeSpinner);
         btnRegister = findViewById(R.id.btnRegister);
-        linkLogin = findViewById(R.id.linkLogin);
+        linkSignIn = findViewById(R.id.linkLogin);
+
+        linkSignIn.setOnClickListener(v -> finish());
+        btnRegister.setOnClickListener(v -> doRegister());
     }
 
-    private void setupCountryCodeSpinner() {
-        String[] countryCodes = {"+84 VN", "+1 US", "+44 UK", "+81 JP"};
+    private void doRegister() {
+        String fullName = textOf(fullNameInput);
+        String email = textOf(emailInput);
+        String password = textOf(passwordInput);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(
-                this,
-                android.R.layout.simple_spinner_dropdown_item,
-                countryCodes
-        );
-        countryCodeSpinner.setAdapter(adapter);
-    }
-
-    private void setupListeners() {
-        btnRegister.setOnClickListener(v -> registerUser());
-
-        linkLogin.setOnClickListener(v -> {
-            Intent intent = new Intent(RegisterActivity.this, LOGIN_ACTIVITY_CLASS);
-            startActivity(intent);
-            finish();
-        });
-
-        dobInput.setOnClickListener(v -> showDatePicker());
-        dobInput.setFocusable(false);
-        dobInput.setCursorVisible(false);
-    }
-
-    private void showDatePicker() {
-        final Calendar c = Calendar.getInstance();
-        int year = c.get(Calendar.YEAR);
-        int month = c.get(Calendar.MONTH);
-        int day = c.get(Calendar.DAY_OF_MONTH);
-
-        DatePickerDialog datePickerDialog = new DatePickerDialog(
-                this,
-                (view, selectedYear, selectedMonth, selectedDay) -> {
-                    String date = String.format(Locale.getDefault(), "%02d/%02d/%d", selectedDay, selectedMonth + 1, selectedYear);
-                    dobInput.setText(date);
-                },
-                year, month, day);
-        datePickerDialog.show();
-    }
-
-    private void registerUser() {
-        String fullName = nameInput.getText().toString().trim();
-        String email = emailInput.getText().toString().trim();
-        String dob = dobInput.getText().toString().trim();
-        String phone = phoneInput.getText().toString().trim();
-        String password = passwordInput.getText().toString();
-        String countryCode = (String) countryCodeSpinner.getSelectedItem();
-
-        if (fullName.isEmpty() || email.isEmpty() || dob.isEmpty() || phone.isEmpty() || password.isEmpty()) {
-            Toast.makeText(this, "Vui lòng điền đầy đủ thông tin.", Toast.LENGTH_SHORT).show();
+        if (fullName.length() < 2) {
+            toast("Full name quá ngắn");
             return;
         }
-
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            toast("Email không hợp lệ");
+            return;
+        }
         if (password.length() < 6) {
-            passwordInput.setError("Mật khẩu phải có ít nhất 6 ký tự.");
-            passwordInput.requestFocus();
+            toast("Password tối thiểu 6 ký tự");
             return;
         }
 
-        String fullPhoneNumber = countryCode + " " + phone;
-        Toast.makeText(this, "Đăng ký thành công! SĐT: " + fullPhoneNumber, Toast.LENGTH_LONG).show();
+        btnRegister.setEnabled(false);
 
-        // TODO: Triển khai logic gọi API đăng ký và xử lý phản hồi tại đây
+        ApiService api = ApiClient.getClient().create(ApiService.class);
+        api.register(new RegisterRequest(fullName, email, password)).enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                btnRegister.setEnabled(true);
+
+                if (!response.isSuccessful() || response.body() == null) {
+                    toast("Register fail: " + response.code());
+                    return;
+                }
+
+                toast("Register OK. Mời đăng nhập!");
+                startActivity(new Intent(RegisterActivity.this, LoginActivity.class));
+                finish();
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                btnRegister.setEnabled(true);
+                toast("Error: " + t.getMessage());
+            }
+        });
+    }
+
+    private String textOf(TextInputEditText e) {
+        return e.getText() == null ? "" : e.getText().toString().trim();
+    }
+
+    private void toast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }

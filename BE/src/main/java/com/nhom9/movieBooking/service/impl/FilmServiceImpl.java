@@ -70,5 +70,56 @@ public class FilmServiceImpl implements FilmService{
        filmRepository.deleteById(id);
     }
     
+    @Override
+    public List<MovieListDto> getMovieListForHome() {
+        // 1) map filmId -> avgRating
+        Map<Integer, Float> avgMap = new HashMap<>();
+        for (Object[] row : reviewRepository.avgRatingByFilm()) {
+            Integer filmId = (Integer) row[0];
+            Double avg = (Double) row[1];
+            avgMap.put(filmId, avg == null ? 0f : avg.floatValue());
+        }
+
+        // 2) films -> dto FE needs
+        List<Film> films = filmRepository.findAll();
+        return films.stream()
+                .map(f -> new MovieListDto(
+                        f.getFilmId(),
+                        f.getGenre(),
+                         f.getPosterUrl(),
+                         avgMap.getOrDefault(f.getFilmId(), 0f),
+                        f.getTitle()
+                           // Float ok (autobox)
+                ))
+                .toList();
+
+    }
+
+    @Override
+    public FilmDetailDto getFilmDetail(Integer filmId) {
+        Film film = filmRepository.findById(filmId)
+                .orElseThrow(() -> new RuntimeException("Film not found"));
+
+        Double avg = reviewRepository.avgRatingByFilmId(filmId);
+        float rating = (avg == null) ? 0f : avg.floatValue();
+
+        FilmDetailDto dto = new FilmDetailDto();
+        dto.setFilmId(film.getFilmId());
+        dto.setTitle(film.getTitle());
+        dto.setGenre(film.getGenre());
+        dto.setPosterUrl(film.getPosterUrl());
+        dto.setRating(rating);
+
+        dto.setDuration(film.getDuration());
+        dto.setAgeRating(film.getAgeRating());
+        dto.setDescription(film.getDescriptionFilm());
+        dto.setDirector(film.getDirector());
+        dto.setCast(film.getCastText());
+        dto.setRelease(film.getReleaseDate() == null ? null : film.getReleaseDate().toString());
+
+
+        return dto;
+    }
+
 
 }
