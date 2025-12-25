@@ -80,6 +80,11 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_food_combo.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_home.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
@@ -100,6 +105,11 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_preview_order.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_register.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
@@ -115,7 +125,17 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/activity_ticket.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/bottom_sheet_ticket_type.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/dialog_momo_payment.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
@@ -126,6 +146,11 @@
         </config>
       </layout>
       <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_cinema_group.xml">
+        <config>
+          <theme>@style/Theme.TicketBookingApp</theme>
+        </config>
+      </layout>
+      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_food.xml">
         <config>
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
@@ -155,11 +180,6 @@
           <theme>@style/Theme.TicketBookingApp</theme>
         </config>
       </layout>
-      <layout url="file://$PROJECT_DIR$/FE/app/src/main/res/layout/item_sessions_row.xml">
-        <config>
-          <theme>@style/Theme.TicketBookingApp</theme>
-        </config>
-      </layout>
     </layouts>
   </component>
   <component name="AutoImportSettings">
@@ -167,19 +187,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="4a508728-4670-4fa1-ad54-e8aa3fa44c77" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/CinemaAdapter.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/drawable/ic_back.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/caches/deviceStreaming.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/FoodAdapter.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/BookingOrder.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Food.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/FoodComboActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/PreviewOrderActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/TicketActivity.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_food_combo.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_preview_order.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_ticket.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/dialog_momo_payment.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_food.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/SessionAdapter.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/adapters/SessionAdapter.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Session.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/models/Session.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/MovieDetailActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/MovieDetailActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/SeatSelectionActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/SeatSelectionActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/TicketTypeBottomSheet.java" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/java/com/example/ticketbookingapp/screens/TicketTypeBottomSheet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_seat_selection.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/activity_seat_selection.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/dialog_sort_sessions.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/dialog_sort_sessions.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_cinema_group.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_cinema_group.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_session_row.xml" beforeDir="false" afterPath="$PROJECT_DIR$/FE/app/src/main/res/layout/item_sessions_row.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -243,9 +262,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="layoutResourceFile" />
-        <option value="Class" />
         <option value="resourceFile" />
+        <option value="Class" />
+        <option value="layoutResourceFile" />
       </list>
     </option>
   </component>
@@ -267,29 +286,29 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Android App.app.executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App/FE/app [testDebugUnitTest].executor&quot;: &quot;Run&quot;,
-    &quot;Gradle.FE:app [testReleaseUnitTest].executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
-    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;add__food&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.17&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;experimental&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Android App.app.executor": "Run",
+    "Gradle.C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App/FE/app [testDebugUnitTest].executor": "Run",
+    "Gradle.FE:app [testReleaseUnitTest].executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.cidr.known.project.marker": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.readMode.enableVisualFormatting": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "cf.first.check.clang-format": "false",
+    "cidr.known.project.marker": "true",
+    "git-widget-placeholder": "add__food",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/YA DAT/Documents/GitHub/Film-Ticket-App",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.17",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "experimental"
   }
-}</component>
+}]]></component>
   <component name="PsdUISettings">
     <option name="LAST_EDITED_BUILD_TYPE" value="release" />
   </component>
