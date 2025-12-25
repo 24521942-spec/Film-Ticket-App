@@ -10,6 +10,8 @@ public class SeatDto {
     private String seatType;
     private SeatStatus status;
 
+    public SeatDto() {}
+
     public SeatDto(int colLabel, String rowLabel, String seatCode, int seatId, String seatType, SeatStatus status) {
         this.colLabel = colLabel;
         this.rowLabel = rowLabel;
@@ -64,8 +66,8 @@ public class SeatDto {
         return status;
     }
 
-    public void setStatus(SeatStatus status) {
-        this.status = status;
+    public void setStatus(SeatStatus status2) {
+        this.status = status2;
     }
 
 

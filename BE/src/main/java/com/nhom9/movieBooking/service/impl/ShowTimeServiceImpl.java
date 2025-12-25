@@ -2,9 +2,11 @@ package com.nhom9.movieBooking.service.impl;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,7 @@ import com.nhom9.movieBooking.service.ShowtimeService;
 import jakarta.transaction.Transactional;
 
 @Service
-public class ShowTimeServiceImpl implements ShowtimeService{
+public class ShowTimeServiceImpl implements ShowtimeService {
 
     private final SeatService seatService;
 
@@ -42,7 +44,14 @@ public class ShowTimeServiceImpl implements ShowtimeService{
     private final SeatRepository seatRepository;
 
     @Autowired
-    public ShowTimeServiceImpl(ShowTimeRepository showtimeRepository, SeatholdRepository seatholdRepository, UserRepository userRepository, BookingseatRepository bookingseatRepository, SeatRepository seatRepository, SeatService seatService) {
+    public ShowTimeServiceImpl(
+            ShowTimeRepository showtimeRepository,
+            SeatholdRepository seatholdRepository,
+            UserRepository userRepository,
+            BookingseatRepository bookingseatRepository,
+            SeatRepository seatRepository,
+            SeatService seatService
+    ) {
         this.showtimeRepository = showtimeRepository;
         this.seatholdRepository = seatholdRepository;
         this.userRepository = userRepository;
@@ -50,8 +59,6 @@ public class ShowTimeServiceImpl implements ShowtimeService{
         this.seatRepository = seatRepository;
         this.seatService = seatService;
     }
-
-    
 
     @Override
     public List<ShowtimeDto> getAllShowtimes() {
@@ -63,28 +70,36 @@ public class ShowTimeServiceImpl implements ShowtimeService{
 
     @Override
     public ShowtimeDto getShowtimeById(Integer id) {
-        ShowTime showtime = showtimeRepository.findById(id).orElseThrow(() -> new RuntimeException("Showtime not found"));
+        ShowTime showtime = showtimeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
         return ShowtimeMapper.toShowtimeDto(showtime);
     }
 
     @Override
     public ShowtimeDto createShowtime(ShowtimeDto showtimeDto) {
         ShowTime showtime = new ShowTime();
-        showtime.setBasePrice(showtime.getBasePrice());
-        showtime.setLanguageFilm(showtime.getLanguageFilm());
-        showtime.setStartTime(showtime.getStartTime());
-        showtime.setSubtitle(showtime.getSubtitle());
+
+        // ✅ FIX: set từ showtimeDto (code cũ set từ chính showtime => null)
+        showtime.setBasePrice(showtimeDto.getBasePrice());
+        showtime.setLanguageFilm(showtimeDto.getLanguageFilm());
+        showtime.setStartTime(showtimeDto.getStartTime());
+        showtime.setSubtitle(showtimeDto.getSubtitle());
+
         showtimeRepository.save(showtime);
         return ShowtimeMapper.toShowtimeDto(showtime);
     }
 
     @Override
     public ShowtimeDto updateShowtime(Integer id, ShowtimeDto showtimeDto) {
-        ShowTime showtime =  showtimeRepository.findById(id).orElseThrow(() -> new RuntimeException("Showtime not found"));
-        showtime.setBasePrice(showtime.getBasePrice());
-        showtime.setLanguageFilm(showtime.getLanguageFilm());
-        showtime.setStartTime(showtime.getStartTime());
-        showtime.setSubtitle(showtime.getSubtitle());
+        ShowTime showtime = showtimeRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+        // ✅ FIX: set từ showtimeDto
+        showtime.setBasePrice(showtimeDto.getBasePrice());
+        showtime.setLanguageFilm(showtimeDto.getLanguageFilm());
+        showtime.setStartTime(showtimeDto.getStartTime());
+        showtime.setSubtitle(showtimeDto.getSubtitle());
+
         showtimeRepository.save(showtime);
         return ShowtimeMapper.toShowtimeDto(showtime);
     }
@@ -96,12 +111,14 @@ public class ShowTimeServiceImpl implements ShowtimeService{
 
     @Override
     public Map<String, List<LocalDateTime>> getShowtimeByFilmGroupByCinema(Integer filmId) {
-        List<ShowTime> showtimes = showtimeRepository.findByFilmFilmIdOrderByRoomCinemaCineNameAscStartTimeAsc(filmId);
+        List<ShowTime> showtimes = showtimeRepository
+                .findByFilmFilmIdOrderByRoomCinemaCineNameAscStartTimeAsc(filmId);
+
         return showtimes.stream()
                 .collect(Collectors.groupingBy(
-                    st -> st.getRoom().getCinema().getCineName(),
-                    LinkedHashMap::new,
-                    Collectors.mapping(ShowTime::getStartTime, Collectors.toList())
+                        st -> st.getRoom().getCinema().getCineName(),
+                        LinkedHashMap::new,
+                        Collectors.mapping(ShowTime::getStartTime, Collectors.toList())
                 ));
     }
 
@@ -109,7 +126,7 @@ public class ShowTimeServiceImpl implements ShowtimeService{
     public List<ShowTime> getAllShowtimeByFilmId(Integer filmId) {
         return showtimeRepository.findByFilmFilmIdOrderByStartTimeAsc(filmId);
     }
-    
+
     @Override
     @Transactional
     public List<SeatDto> holdSeats(Integer showtimeId, Integer userId, List<Integer> seatIds, int holdMinutes) {
@@ -127,6 +144,7 @@ public class ShowTimeServiceImpl implements ShowtimeService{
 
         LocalDateTime now = LocalDateTime.now();
 
+        // cleanup expired hold
         List<SeatHold> expired = seatholdRepository.findByExpireAtBefore(now);
         if (!expired.isEmpty()) seatholdRepository.deleteAll(expired);
 
@@ -144,11 +162,15 @@ public class ShowTimeServiceImpl implements ShowtimeService{
             if (seat.getRoom() != null && !seat.getRoom().getRoomId().equals(roomId)) {
                 throw new RuntimeException("Seat " + seatId + " not in this showtime room");
             }
+
             List<String> lockedStatuses = List.of("PAID", "PENDING_PAYMENT");
-            // SOLD?
-            boolean isSold = bookingseatRepository
-                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBookingIn(showtimeId, seatId, lockedStatuses);
-            if (isSold) throw new RuntimeException("Seat already sold: " + seat.getSeatCode());
+
+            // LOCKED/PAID?
+            boolean isLockedOrPaid = bookingseatRepository
+                    .existsByShowtimeShowTimeIdAndSeatSeatIdAndBookingStatusBookingIn(
+                            showtimeId, seatId, lockedStatuses
+                    );
+            if (isLockedOrPaid) throw new RuntimeException("Seat already locked/sold: " + seat.getSeatCode());
 
             // HOLD còn hạn?
             boolean isHold = seatholdRepository
@@ -171,73 +193,163 @@ public class ShowTimeServiceImpl implements ShowtimeService{
         return result;
     }
 
-
-
     @Override
     public List<SeatDto> getSeatsByShowtime(Integer showtimeId) {
         ShowTime showtime = showtimeRepository.findById(showtimeId)
-            .orElseThrow(() -> new RuntimeException("Showtime not found"));
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
 
         LocalDateTime now = LocalDateTime.now();
 
-        // seat trong phòng của showtime
-        List<Seat> seats = seatRepository.findByRoomRoomId(showtime.getRoom().getRoomId());
+        Integer roomId = showtime.getRoom().getRoomId();
 
-        // booking_seat của showtime (PAID hoặc PENDING_PAYMENT)
+        // ✅ seat trong phòng của showtime -> seatId lấy từ DB (UNIQUE)
+        List<Seat> seats = seatRepository.findByRoomRoomId(roomId);
+
+        // ✅ booking_seat của showtime (PAID hoặc PENDING_PAYMENT)
         List<BookingSeat> bsList = bookingseatRepository.findByShowtimeAndBookingStatusIn(
-            showtimeId,
-            List.of("PAID", "PENDING_PAYMENT")
+                showtimeId,
+                List.of("PAID", "PENDING_PAYMENT")
         );
 
-        // map seatId -> bookingStatus
+        // map seatId -> bookingStatus (PAID / PENDING_PAYMENT)
         Map<Integer, String> seatIdToBookingStatus = bsList.stream()
-            .collect(Collectors.toMap(
-                bs -> bs.getSeat().getSeatId(),
-                bs -> bs.getBooking().getStatusBooking(),
-                (a, b) -> a
-            ));
+                .collect(Collectors.toMap(
+                        bs -> bs.getSeat().getSeatId(),
+                        bs -> bs.getBooking().getStatusBooking(),
+                        (a, b) -> a
+                ));
 
-        return seats.stream().map(seat -> {
+        // ✅ HOLD: lấy 1 lần tất cả hold còn hạn của showtime để tránh N+1 query
+        List<SeatHold> holdList = seatholdRepository.findByShowtimeShowTimeIdAndExpireAtAfter(showtimeId, now);
+        Set<Integer> holdingSeatIds = holdList.stream()
+                .map(h -> h.getSeat().getSeatId())
+                .collect(Collectors.toCollection(HashSet::new));
 
-            SeatStatus status;
+        return seats.stream()
+                .map(seat -> {
 
-            // 1) PAID => SOLD
-            String bookingStatus = seatIdToBookingStatus.get(seat.getSeatId());
-            if ("PAID".equals(bookingStatus)) {
-                status = SeatStatus.SOLD;
+                    SeatStatus status;
+
+                    String bookingStatus = seatIdToBookingStatus.get(seat.getSeatId());
+
+                    // 1) PAID => SOLD
+                    if ("PAID".equals(bookingStatus)) {
+                        status = SeatStatus.SOLD;
+                    }
+                    // 2) PENDING_PAYMENT => LOCKED
+                    else if ("PENDING_PAYMENT".equals(bookingStatus)) {
+                        status = SeatStatus.LOCKED;
+                    }
+                    // 3) HOLD (chưa hết hạn)
+                    else if (holdingSeatIds.contains(seat.getSeatId())) {
+                        status = SeatStatus.HOLD;
+                    }
+                    // 4) AVAILABLE
+                    else {
+                        status = SeatStatus.AVAILABLE;
+                    }
+
+                    // ✅ dùng seatId thật từ DB
+                    SeatDto dto = new SeatDto();
+                        dto.setSeatId(seat.getSeatId());          // ✅ 1..15 đúng theo DB
+                        dto.setSeatCode(seat.getSeatCode());      // ✅ A1, B1, C1
+                        dto.setRowLabel(seat.getRowLabel());      // ✅ A, B, C
+                        dto.setColLabel(seat.getColLabel());      // ✅ 1..5
+                        dto.setSeatType(seat.getSeatType());
+                        dto.setStatus(status);
+
+                    return dto;
+
+
+                })
+                // optional: sort cho FE render đẹp theo row/col
+                .sorted((a, b) -> {
+                    int r = a.getRowLabel().compareToIgnoreCase(b.getRowLabel());
+                    if (r != 0) return r;
+                    return Integer.compare(a.getColLabel(), b.getColLabel());
+                })
+                .toList();
+    }
+    @Override
+    @Transactional
+    public List<SeatDto> releaseHoldSeats(Integer showtimeId, Integer userId, List<Integer> seatIds) {
+
+        if (userId == null) throw new RuntimeException("userId is required");
+        if (seatIds == null || seatIds.isEmpty()) throw new RuntimeException("seatIds is empty");
+
+        ShowTime showtime = showtimeRepository.findById(showtimeId)
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
+
+        LocalDateTime now = LocalDateTime.now();
+
+        // dọn hold hết hạn trước
+        List<SeatHold> expired = seatholdRepository.findByExpireAtBefore(now);
+        if (!expired.isEmpty()) seatholdRepository.deleteAll(expired);
+
+        // chỉ xoá những hold thuộc user + showtime + còn hạn
+        seatholdRepository.deleteByUserUserIdAndShowtimeShowTimeIdAndSeatSeatIdInAndExpireAtAfter(
+                userId, showtimeId, seatIds, now
+        );
+
+        // trả list ghế đã release => AVAILABLE (để FE cập nhật)
+        List<SeatDto> result = new ArrayList<>();
+        for (Integer seatId : seatIds) {
+            Seat seat = seatRepository.findById(seatId)
+                    .orElseThrow(() -> new RuntimeException("Seat not found: " + seatId));
+
+            // optional: check seat thuộc đúng room showtime
+            if (seat.getRoom() != null && showtime.getRoom() != null
+                    && !seat.getRoom().getRoomId().equals(showtime.getRoom().getRoomId())) {
+                throw new RuntimeException("Seat " + seatId + " not in this showtime room");
             }
-            // 2) PENDING_PAYMENT => LOCKED
-            else if ("PENDING_PAYMENT".equals(bookingStatus)) {
-                status = SeatStatus.LOCKED;
-            }
-            // 3) HOLD (chưa hết hạn)
-            else {
-                boolean holding = seatholdRepository
-                    .findFirstBySeatSeatIdAndShowtimeShowTimeIdAndExpireAtAfter(seat.getSeatId(), showtimeId, now)
-                    .isPresent();
 
-                status = holding ? SeatStatus.HOLD : SeatStatus.AVAILABLE;
-            }
+            result.add(SeatMapper.toSeatDto(seat, SeatStatus.AVAILABLE));
+        }
 
-            // ✅ SeatDto của bạn không có constructor rỗng -> phải new đúng constructor
-            return new SeatDto(
-                seat.getSeatId(),
-                seat.getRowLabel(),
-                seat.getSeatCode(),
-                seat.getColLabel(),
-                seat.getSeatType(),
-                status
-            );
-
-        }).toList();
+        return result;
     }
 
+    @Override
+    @Transactional
+    public List<SeatDto> extendHoldSeats(Integer showtimeId, Integer userId, List<Integer> seatIds, int holdMinutes) {
 
-    
+        if (userId == null) throw new RuntimeException("userId is required");
+        if (seatIds == null || seatIds.isEmpty()) throw new RuntimeException("seatIds is empty");
+        if (holdMinutes <= 0) holdMinutes = 5;
 
+        showtimeRepository.findById(showtimeId)
+                .orElseThrow(() -> new RuntimeException("Showtime not found"));
 
+        LocalDateTime now = LocalDateTime.now();
 
+        // dọn hold hết hạn trước
+        List<SeatHold> expired = seatholdRepository.findByExpireAtBefore(now);
+        if (!expired.isEmpty()) seatholdRepository.deleteAll(expired);
 
+        // lấy các hold còn hạn của user cho đúng seatIds
+        List<SeatHold> holds = seatholdRepository
+                .findByUserUserIdAndShowtimeShowTimeIdAndSeatSeatIdInAndExpireAtAfter(userId, showtimeId, seatIds, now);
 
-    
+        if (holds.isEmpty()) throw new RuntimeException("No seats held to extend (hold expired or not yours)");
+
+        // bắt buộc đủ tất cả seatIds (tránh extend thiếu)
+        if (holds.size() != seatIds.size()) {
+            throw new RuntimeException("Some seats are not held by this user or expired");
+        }
+
+        LocalDateTime newExpireAt = now.plusMinutes(holdMinutes);
+
+        for (SeatHold h : holds) {
+            h.setExpireAt(newExpireAt);
+            // optional: cập nhật lại holdAt để log
+            h.setHoldAt(now);
+        }
+        seatholdRepository.saveAll(holds);
+
+        // trả list ghế => HOLD (để FE cập nhật + reset timer)
+        return holds.stream()
+                .map(h -> SeatMapper.toSeatDto(h.getSeat(), SeatStatus.HOLD))
+                .toList();
+    }
+
 }

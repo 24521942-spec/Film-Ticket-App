@@ -50,20 +50,74 @@ public class Booking {
     @Column(name = "note", length = 255)
     private String note;
 
+    @Column(name = "subtotal_seat", nullable = false)
+    private long subtotalSeat;
+
+    @Column(name = "subtotal_food", nullable = false)
+    private long subtotalFood;
+
+    @Column(name = "total_amount", nullable = false)
+    private long totalAmount;
+
     
     public Booking() {}
 
-    public Booking(Integer bookingId, List<BookingSeat> bookingSeats, LocalDateTime createdAt, String note, ShowTime showtime, String statusBooking, BigDecimal totalPay, int totalTickets, User user) {
+    
+
+    public Booking(Integer bookingId, List<BookingSeat> bookingSeats, User user, ShowTime showtime,
+            LocalDateTime createdAt, int totalTickets, BigDecimal totalPay, String statusBooking, String note,
+            long subtotalSeat, long subtotalFood, long totalAmount) {
         this.bookingId = bookingId;
         this.bookingSeats = bookingSeats;
-        this.createdAt = createdAt;
-        this.note = note;
-        this.showtime = showtime;
-        this.statusBooking = statusBooking;
-        this.totalPay = totalPay;
-        this.totalTickets = totalTickets;
         this.user = user;
+        this.showtime = showtime;
+        this.createdAt = createdAt;
+        this.totalTickets = totalTickets;
+        this.totalPay = totalPay;
+        this.statusBooking = statusBooking;
+        this.note = note;
+        this.subtotalSeat = subtotalSeat;
+        this.subtotalFood = subtotalFood;
+        this.totalAmount = totalAmount;
     }
+
+
+
+    public long getSubtotalSeat() {
+        return subtotalSeat;
+    }
+
+
+
+    public void setSubtotalSeat(long subtotalSeat) {
+        this.subtotalSeat = subtotalSeat;
+    }
+
+
+
+    public long getSubtotalFood() {
+        return subtotalFood;
+    }
+
+
+
+    public void setSubtotalFood(long subtotalFood) {
+        this.subtotalFood = subtotalFood;
+    }
+
+
+
+    public long getTotalAmount() {
+        return totalAmount;
+    }
+
+
+
+    public void setTotalAmount(long totalAmount) {
+        this.totalAmount = totalAmount;
+    }
+
+
 
     public Integer getBookingId() {
         return bookingId;

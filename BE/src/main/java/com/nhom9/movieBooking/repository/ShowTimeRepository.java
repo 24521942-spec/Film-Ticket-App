@@ -12,4 +12,6 @@ import com.nhom9.movieBooking.model.ShowTime;
 public interface ShowTimeRepository extends JpaRepository<ShowTime, Integer>{
     List<ShowTime> findByFilmFilmIdOrderByRoomCinemaCineNameAscStartTimeAsc(Integer filmId);
     List<ShowTime> findByFilmFilmIdOrderByStartTimeAsc(Integer filmId);
+    List<ShowTime> findByFilmFilmId(Integer filmId);
+
 }

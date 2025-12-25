@@ -21,4 +21,7 @@ public interface ShowtimeService {
     Map<String, List<LocalDateTime>> getShowtimeByFilmGroupByCinema(Integer filmId);
     List<SeatDto> holdSeats(Integer showtimeId, Integer userId, List<Integer> seatIds, int holdMinutes);
     List<SeatDto> getSeatsByShowtime(Integer showtimeId);
+    List<SeatDto> releaseHoldSeats(Integer showtimeId, Integer userId, List<Integer> seatIds);
+    List<SeatDto> extendHoldSeats(Integer showtimeId, Integer userId, List<Integer> seatIds, int holdMinutes);
+
 }

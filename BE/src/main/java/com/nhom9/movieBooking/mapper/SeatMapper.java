@@ -6,6 +6,16 @@ import com.nhom9.movieBooking.model.Seat;
 
 public class SeatMapper {
     public static SeatDto toSeatDto(Seat seat, SeatStatus status) {
-        return new SeatDto(seat.getColLabel(), seat.getRowLabel(), seat.getSeatCode(), seat.getSeatId(), seat.getSeatType(), status);
-    }
+        SeatDto dto = new SeatDto();
+
+        dto.setSeatId(seat.getSeatId());      
+        dto.setRowLabel(seat.getRowLabel());
+        dto.setColLabel(seat.getColLabel());
+        dto.setSeatCode(seat.getRowLabel() + seat.getColLabel());
+        dto.setSeatType(seat.getSeatType());
+        dto.setStatus(status);
+
+        return dto;
+}
+
 }

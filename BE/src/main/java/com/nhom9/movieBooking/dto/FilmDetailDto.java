@@ -13,7 +13,7 @@ public class FilmDetailDto {
 
     private String director;
     private String cast;
-    private String release; // hoặc LocalDate releaseDate
+    private String release; 
 
 
    

@@ -79,7 +79,7 @@ public class FilmServiceImpl implements FilmService{
     
     @Override
     public List<MovieListDto> getMovieListForHome() {
-        // 1) map filmId -> avgRating
+        
         Map<Integer, Float> avgMap = new HashMap<>();
         for (Object[] row : reviewRepository.avgRatingByFilm()) {
             Integer filmId = (Integer) row[0];
@@ -87,7 +87,7 @@ public class FilmServiceImpl implements FilmService{
             avgMap.put(filmId, avg == null ? 0f : avg.floatValue());
         }
 
-        // 2) films -> dto FE needs
+        
         List<Film> films = filmRepository.findAll();
         return films.stream()
                 .map(f -> new MovieListDto(
@@ -96,7 +96,7 @@ public class FilmServiceImpl implements FilmService{
                          f.getPosterUrl(),
                          avgMap.getOrDefault(f.getFilmId(), 0f),
                         f.getTitle()
-                           // Float ok (autobox)
+                         
                 ))
                 .toList();
 

@@ -23,4 +23,12 @@ public interface SeatholdRepository extends  JpaRepository<SeatHold, Integer>{
         Integer showtimeId,
         LocalDateTime now
     );
+    List<SeatHold> findByUserUserIdAndShowtimeShowTimeIdAndSeatSeatIdInAndExpireAtAfter(
+            Integer userId, Integer showtimeId, List<Integer> seatIds, LocalDateTime now
+    );
+
+    
+    void deleteByUserUserIdAndShowtimeShowTimeIdAndSeatSeatIdInAndExpireAtAfter(
+            Integer userId, Integer showtimeId, List<Integer> seatIds, LocalDateTime now
+    );
 }

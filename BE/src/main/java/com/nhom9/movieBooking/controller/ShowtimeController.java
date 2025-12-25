@@ -16,6 +16,7 @@ import com.nhom9.movieBooking.dto.BookingResponseDto;
 import com.nhom9.movieBooking.dto.CheckoutPreviewRequestDto;
 import com.nhom9.movieBooking.dto.CheckoutPreviewResponseDto;
 import com.nhom9.movieBooking.dto.SeatDto;
+import com.nhom9.movieBooking.dto.SeatHoldActionRequest;
 import com.nhom9.movieBooking.dto.ShowtimeDto;
 import com.nhom9.movieBooking.enums.HoldSeatsRequest;
 import com.nhom9.movieBooking.service.BookingService;
@@ -73,6 +74,24 @@ public class ShowtimeController {
         return seatService.holdSeats(showtimeId, req.getUserId(), req.getSeatIds(), holdMinutes);
     }
 
+    @PostMapping("/{showtimeId}/seats/release")
+    public List<SeatDto> releaseHold(
+            @PathVariable Integer showtimeId,
+            @RequestBody SeatHoldActionRequest req
+    ) {
+        return showtimeService.releaseHoldSeats(showtimeId, req.getUserId(), req.getSeatIds());
+    }
+
+    @PostMapping("/{showtimeId}/seats/extend")
+    public List<SeatDto> extendHold(
+            @PathVariable Integer showtimeId,
+            @RequestBody SeatHoldActionRequest req
+    ) {
+        int minutes = (req.getHoldMinutes() == null ? 5 : req.getHoldMinutes());
+        return showtimeService.extendHoldSeats(showtimeId, req.getUserId(), req.getSeatIds(), minutes);
+    }
+
+
         
     @PostMapping("/{showtimeId}/checkout/preview")
     public CheckoutPreviewResponseDto previewCheckout(
@@ -87,10 +106,15 @@ public class ShowtimeController {
             @PathVariable Integer showtimeId,
             @RequestBody BookingRequestDto req
     ) {
-        // ép showtimeId theo path để khỏi bị FE gửi sai
+        
         req.setShowtimeId(showtimeId);
-        return bookingService.checkoutFromHold(req); // hoặc bookingService.confirmFromHold(req)
+        return bookingService.checkoutFromHold(req); 
     }
+
+    // @GetMapping("/{showtimeId}/seats")
+    // public List<SeatDto> getSeats(@PathVariable Integer showtimeId) {
+    //     return showtimeService.getSeatsByShowtime(showtimeId);
+    // }
 
 
 

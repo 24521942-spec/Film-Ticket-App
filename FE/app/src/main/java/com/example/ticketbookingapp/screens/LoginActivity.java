@@ -1,88 +1,109 @@
-package com.example.ticketbookingapp.screens; // Change this to your actual package name
+package com.example.ticketbookingapp.screens;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.view.View;
+import android.util.Patterns;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.ticketbookingapp.R;
+import com.example.ticketbookingapp.network.ApiClient;
+import com.example.ticketbookingapp.network.ApiService;
+import com.example.ticketbookingapp.network.dto.AuthResponse;
+import com.example.ticketbookingapp.network.dto.LoginRequest;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class LoginActivity extends AppCompatActivity {
 
-    // UI Components
-    private TextInputEditText emailInput;
-    private TextInputEditText passwordInput;
+    private TextInputEditText emailInput, passwordInput;
     private MaterialButton btnLogin;
     private TextView linkSignUp;
-    private TextView forgotPassword;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login); // Ensure your XML file is named activity_login.xml
+        setContentView(R.layout.activity_login);
 
-        initializeViews();
-        setupListeners();
-    }
-
-    private void initializeViews() {
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
         btnLogin = findViewById(R.id.btnLogin);
         linkSignUp = findViewById(R.id.linkSignUp);
-        forgotPassword = findViewById(R.id.forgotPassword);
+
+        linkSignUp.setOnClickListener(v -> {
+            startActivity(new Intent(this, RegisterActivity.class));
+        });
+
+        btnLogin.setOnClickListener(v -> doLogin());
     }
 
-    private void setupListeners() {
-        // Handle Login Button Click
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                attemptLogin();
-            }
-        });
+    private void doLogin() {
+        String email = textOf(emailInput);
+        String password = textOf(passwordInput);
 
-        linkSignUp.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(LoginActivity.this, RegisterActivity.class);
-                startActivity(intent);
-            }
-        });
-
-        // Handle "Forgot Password" Click
-        forgotPassword.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LoginActivity.this, "Navigate to Forgot Password Screen", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    private void attemptLogin() {
-        String email = emailInput.getText().toString().trim();
-        String password = passwordInput.getText().toString().trim();
-
-        if (TextUtils.isEmpty(email)) {
-            emailInput.setError("Email is required");
-            emailInput.requestFocus();
+        if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+            toast("Email không hợp lệ");
+            return;
+        }
+        if (password.length() < 6) {
+            toast("Password tối thiểu 6 ký tự");
             return;
         }
 
-        if (TextUtils.isEmpty(password)) {
-            passwordInput.setError("Password is required");
-            passwordInput.requestFocus();
-            return;
-        }
+        btnLogin.setEnabled(false);
 
-        // TODO: Implement your API authentication logic here
-        Toast.makeText(this, "Login Successful!", Toast.LENGTH_SHORT).show();
+        ApiService api = ApiClient.getClient().create(ApiService.class);
+        api.login(new LoginRequest(email, password)).enqueue(new Callback<AuthResponse>() {
+            @Override
+            public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
+                btnLogin.setEnabled(true);
 
+                if (!response.isSuccessful() || response.body() == null) {
+                    toast("Login fail: " + response.code());
+                    return;
+                }
+
+                AuthResponse user = response.body();
+                saveUser(user);
+
+                toast("Xin chào " + user.getFullName());
+
+                // chuyển về Home (đổi đúng Activity bạn đang dùng)
+                Intent i = new Intent(LoginActivity.this, HomeActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                startActivity(i);
+            }
+
+            @Override
+            public void onFailure(Call<AuthResponse> call, Throwable t) {
+                btnLogin.setEnabled(true);
+                toast("Error: " + t.getMessage());
+            }
+        });
+    }
+
+    private void saveUser(AuthResponse user) {
+        SharedPreferences sp = getSharedPreferences("auth", MODE_PRIVATE);
+        sp.edit()
+                .putInt("userId", user.getUserId())
+                .putString("fullName", user.getFullName())
+                .putString("email", user.getEmail())
+                .putString("role", user.getRole())
+                .apply();
+    }
+
+    private String textOf(TextInputEditText e) {
+        return e.getText() == null ? "" : e.getText().toString().trim();
+    }
+
+    private void toast(String msg) {
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
     }
 }
