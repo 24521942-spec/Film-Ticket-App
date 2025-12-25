@@ -1,20 +1,15 @@
 package com.nhom9.movieBooking.service.impl;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.nhom9.movieBooking.dto.FilmDetailDto;
 import com.nhom9.movieBooking.dto.FilmDto;
-import com.nhom9.movieBooking.dto.MovieListDto;
 import com.nhom9.movieBooking.mapper.FilmMapper;
 import com.nhom9.movieBooking.model.Film;
 import com.nhom9.movieBooking.repository.FilmRepository;
-import com.nhom9.movieBooking.repository.ReviewRepository;
 import com.nhom9.movieBooking.repository.ShowTimeRepository;
 import com.nhom9.movieBooking.service.FilmService;
 
@@ -22,13 +17,11 @@ import com.nhom9.movieBooking.service.FilmService;
 public class FilmServiceImpl implements FilmService{
     private final FilmRepository filmRepository;
     private final ShowTimeRepository showtimeRepository;
-    private final ReviewRepository reviewRepository;
 
     @Autowired
-    public FilmServiceImpl(FilmRepository filmRepository, ShowTimeRepository showtimeRepository, ReviewRepository reviewRepository) {
+    public FilmServiceImpl(FilmRepository filmRepository, ShowTimeRepository showtimeRepository) {
         this.filmRepository = filmRepository;
         this.showtimeRepository = showtimeRepository;
-        this.reviewRepository = reviewRepository;
     }
 
     @Override
@@ -79,7 +72,7 @@ public class FilmServiceImpl implements FilmService{
     
     @Override
     public List<MovieListDto> getMovieListForHome() {
-        
+        // 1) map filmId -> avgRating
         Map<Integer, Float> avgMap = new HashMap<>();
         for (Object[] row : reviewRepository.avgRatingByFilm()) {
             Integer filmId = (Integer) row[0];
@@ -87,7 +80,7 @@ public class FilmServiceImpl implements FilmService{
             avgMap.put(filmId, avg == null ? 0f : avg.floatValue());
         }
 
-        
+        // 2) films -> dto FE needs
         List<Film> films = filmRepository.findAll();
         return films.stream()
                 .map(f -> new MovieListDto(
@@ -96,7 +89,7 @@ public class FilmServiceImpl implements FilmService{
                          f.getPosterUrl(),
                          avgMap.getOrDefault(f.getFilmId(), 0f),
                         f.getTitle()
-                         
+                           // Float ok (autobox)
                 ))
                 .toList();
 
