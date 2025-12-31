@@ -18,6 +18,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <LinearLayout
+        android:id="@+id/ticketCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="30dp"
@@ -25,21 +26,65 @@
         android:backgroundTint="#FFFFFF"
         android:orientation="vertical"
         android:padding="24dp"
-        app:layout_constraintTop_toBottomOf="@id/txtStatus">
+        app:layout_constraintTop_toBottomOf="@id/txtStatus"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView android:id="@+id/txtFinalMovie" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#0F172A" android:textSize="20sp" android:textStyle="bold" />
-        <TextView android:id="@+id/txtFinalCinema" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#64748B" />
+        <TextView
+            android:id="@+id/txtFinalMovie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#0F172A"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtFinalCinema"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="#64748B" />
 
         <ImageView
+            android:id="@+id/imgQr"
             android:layout_width="180dp"
             android:layout_height="180dp"
             android:layout_gravity="center"
-            android:layout_marginVertical="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
+            android:contentDescription="QR Code"
+            android:scaleType="fitCenter"
             android:src="@android:drawable/ic_menu_gallery" />
 
-        <TextView android:id="@+id/txtFinalSeats" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#0F172A" android:textStyle="bold" />
-        <TextView android:id="@+id/txtFinalTotal" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textColor="#10B981" android:textStyle="bold" />
+        <TextView
+            android:id="@+id/txtFinalSeats"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="#0F172A"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txtFinalTotal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="#10B981"
+            android:textStyle="bold" />
     </LinearLayout>
+
+    <Button
+        android:id="@+id/btnSaveTicket"
+        android:layout_width="match_parent"
+        android:layout_height="52dp"
+        android:text="Save Ticket"
+        android:textColor="#FFFFFF"
+        android:backgroundTint="#334155"
+        android:layout_marginTop="14dp"
+        app:layout_constraintTop_toBottomOf="@id/ticketCard"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/btnHome"
+        app:layout_constraintVertical_bias="1"/>
 
     <Button
         android:id="@+id/btnHome"
@@ -47,5 +92,8 @@
         android:layout_height="60dp"
         android:text="Back to Home"
         android:backgroundTint="#FC6D19"
-        app:layout_constraintBottom_toBottomOf="parent" />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

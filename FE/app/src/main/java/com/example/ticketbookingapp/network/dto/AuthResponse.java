@@ -3,6 +3,7 @@ package com.example.ticketbookingapp.network.dto;
 import com.google.gson.annotations.SerializedName;
 
 public class AuthResponse {
+    private String token;
     @SerializedName("userId")
     private int userId;
 
@@ -14,6 +15,14 @@ public class AuthResponse {
 
     @SerializedName("role")
     private String role;
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
 
     public int getUserId() { return userId; }
     public String getFullName() { return fullName; }

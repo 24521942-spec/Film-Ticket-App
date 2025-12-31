@@ -10,15 +10,15 @@
         android:id="@+id/lblInfoTitle"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        tools:text="Director"
         android:textColor="@color/text_muted"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Director" />
 
     <TextView
         android:id="@+id/lblInfoValue"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="Matt Reeves"
         android:textColor="@color/text_main"
-        android:textSize="14sp" />
+        android:textSize="14sp"
+        tools:text="Matt Reeves" />
 </LinearLayout>

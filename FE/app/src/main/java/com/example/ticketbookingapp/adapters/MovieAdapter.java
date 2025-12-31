@@ -1,58 +1,82 @@
 package com.example.ticketbookingapp.adapters;
 
-import android.content.Intent;
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
 import com.example.ticketbookingapp.R;
 import com.example.ticketbookingapp.models.Movie;
-import com.example.ticketbookingapp.screens.MovieDetailActivity;
+
+import java.util.ArrayList;
 import java.util.List;
 
-public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieViewHolder> {
-    private List<Movie> movies;
+public class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.MovieVH> {
 
-    public MovieAdapter(List<Movie> movies) {
-        this.movies = movies;
+    public interface OnMovieClickListener {
+        void onClick(Movie movie);
+    }
+
+    private final Context context;
+    private final OnMovieClickListener listener;
+    private final List<Movie> data = new ArrayList<>();
+
+    public MovieAdapter(Context context, OnMovieClickListener listener) {
+        this.context = context;
+        this.listener = listener;
+    }
+
+    public void setData(List<Movie> movies) {
+        data.clear();
+        if (movies != null) data.addAll(movies);
+        notifyDataSetChanged();
     }
 
     @NonNull
     @Override
-    public MovieViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
-        return new MovieViewHolder(view);
+    public MovieVH onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_movie, parent, false);
+        return new MovieVH(v);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MovieViewHolder holder, int position) {
-        Movie movie = movies.get(position);
-        holder.txtTitle.setText(movie.getTitle());
-        holder.txtGenre.setText(movie.getGenre());
-        holder.txtRating.setText(String.valueOf(movie.getRating()));
+    public void onBindViewHolder(@NonNull MovieVH h, int position) {
+        Movie m = data.get(position);
 
-        holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(v.getContext(), MovieDetailActivity.class);
-            intent.putExtra("movie_title", movie.getTitle());
-            intent.putExtra("movie_genre", movie.getGenre());
-            intent.putExtra("movie_rating", movie.getRating());
-            v.getContext().startActivity(intent);
+        h.txtTitle.setText(m.getTitle());
+        h.txtGenre.setText(m.getGenre());
+        h.txtRating.setText(String.valueOf(m.getRating()));
+
+        // Nếu bạn chưa có placeholder_movie thì đổi thành android built-in:
+        // .placeholder(android.R.drawable.ic_menu_report_image)
+        Glide.with(context)
+                .load(m.getPosterUrl())
+                .placeholder(android.R.drawable.ic_menu_report_image)
+                .error(android.R.drawable.ic_menu_report_image)
+                .centerCrop()
+                .into(h.imgPoster);
+
+        h.itemView.setOnClickListener(v -> {
+            if (listener != null) listener.onClick(m);
         });
     }
 
     @Override
     public int getItemCount() {
-        return movies != null ? movies.size() : 0;
+        return data.size();
     }
 
-    static class MovieViewHolder extends RecyclerView.ViewHolder {
+    static class MovieVH extends RecyclerView.ViewHolder {
         ImageView imgPoster;
         TextView txtTitle, txtGenre, txtRating;
 
-        public MovieViewHolder(@NonNull View itemView) {
+        MovieVH(@NonNull View itemView) {
             super(itemView);
             imgPoster = itemView.findViewById(R.id.imgPoster);
             txtTitle = itemView.findViewById(R.id.txtTitle);

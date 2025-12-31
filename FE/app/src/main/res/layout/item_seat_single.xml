@@ -1,26 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:padding="2dp">
-
-    <View
-        android:id="@+id/viewSeat"
-        android:layout_width="26dp"
-        android:layout_height="26dp"
-        android:layout_gravity="center"
-        android:background="@drawable/bg_seat_selector" />
+    android:id="@+id/seatRoot"
+    android:layout_width="40dp"
+    android:layout_height="40dp"
+    android:layout_margin="6dp"
+    android:background="@drawable/seat_available"
+    android:clickable="true"
+    android:focusable="true">
 
     <TextView
-        android:id="@+id/txtSeatNumber"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:textColor="@android:color/white"
-        android:textSize="9sp"
-        android:textStyle="bold"
-        android:includeFontPadding="false"
-        tools:text="12" />
+        android:id="@+id/txtSeat"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:text="A1"
+        android:textColor="#E2E8F0"
+        android:textSize="12sp"
+        android:textStyle="bold" />
 
 </FrameLayout>

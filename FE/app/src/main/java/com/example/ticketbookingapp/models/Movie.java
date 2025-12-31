@@ -1,16 +1,26 @@
 package com.example.ticketbookingapp.models;
 
 public class Movie {
+    private Integer filmId;
     private String title;
     private String genre;
     private String posterUrl;
     private float rating;
 
-    public Movie(String title, String genre, String posterUrl, float rating) {
+    public Movie(Integer filmId, String title, String genre, String posterUrl, float rating) {
+        this.filmId = filmId;
         this.title = title;
         this.genre = genre;
         this.posterUrl = posterUrl;
         this.rating = rating;
+    }
+
+    public Integer getFilmId() {
+        return filmId;
+    }
+
+    public void setFilmId(Integer filmId) {
+        this.filmId = filmId;
     }
 
     public String getTitle() {

@@ -6,6 +6,20 @@
     android:layout_height="match_parent"
     android:background="#1A2232">
 
+    <!-- ✅ Back arrow (top-left) -->
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_back"
+        android:tint="@android:color/white"
+        android:contentDescription="Back"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <FrameLayout
         android:id="@+id/imageFrame"
         android:layout_width="194dp"
@@ -105,8 +119,7 @@
                         android:id="@+id/emailInput"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:inputType="textEmailAddress"
-                        />
+                        android:inputType="textEmailAddress"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.textfield.TextInputLayout

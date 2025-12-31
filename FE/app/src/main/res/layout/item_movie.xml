@@ -38,7 +38,7 @@
                 android:background="@drawable/bg_rating_badge"
                 android:paddingHorizontal="6dp"
                 android:paddingVertical="2dp"
-                android:text="8.1"
+                android:text="10.0"
                 android:textColor="@color/text_on_primary"
                 android:textSize="12sp" />
         </FrameLayout>

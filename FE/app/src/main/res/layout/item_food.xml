@@ -9,9 +9,14 @@
     android:padding="16dp">
 
     <ImageView
+        android:id="@+id/imgFood"
         android:layout_width="70dp"
         android:layout_height="70dp"
-        android:src="@android:drawable/ic_menu_report_image" />
+        android:src="@drawable/popcorn"
+        android:scaleType="centerCrop"
+        android:background="@drawable/bg_seat_selector"
+        android:padding="6dp"/>
+
 
     <LinearLayout
         android:layout_width="0dp"

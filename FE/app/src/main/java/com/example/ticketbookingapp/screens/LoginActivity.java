@@ -1,7 +1,6 @@
 package com.example.ticketbookingapp.screens;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.widget.TextView;
@@ -14,6 +13,7 @@ import com.example.ticketbookingapp.network.ApiClient;
 import com.example.ticketbookingapp.network.ApiService;
 import com.example.ticketbookingapp.network.dto.AuthResponse;
 import com.example.ticketbookingapp.network.dto.LoginRequest;
+import com.example.ticketbookingapp.utils.SessionManager;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -25,27 +25,31 @@ public class LoginActivity extends AppCompatActivity {
 
     private TextInputEditText emailInput, passwordInput;
     private MaterialButton btnLogin;
-    private TextView linkSignUp;
+    private TextView linkRegister;
+
+    private SessionManager session;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+        session = new SessionManager(this);
+
         emailInput = findViewById(R.id.emailInput);
         passwordInput = findViewById(R.id.passwordInput);
         btnLogin = findViewById(R.id.btnLogin);
-        linkSignUp = findViewById(R.id.linkSignUp);
+        linkRegister = findViewById(R.id.linkSignUp);
 
-        linkSignUp.setOnClickListener(v -> {
-            startActivity(new Intent(this, RegisterActivity.class));
-        });
+        linkRegister.setOnClickListener(v ->
+                startActivity(new Intent(LoginActivity.this, RegisterActivity.class))
+        );
 
         btnLogin.setOnClickListener(v -> doLogin());
     }
 
     private void doLogin() {
-        String email = textOf(emailInput);
+        String email = textOf(emailInput).toLowerCase();
         String password = textOf(passwordInput);
 
         if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
@@ -59,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
 
         btnLogin.setEnabled(false);
 
-        ApiService api = ApiClient.getClient().create(ApiService.class);
+        ApiService api = ApiClient.getClient(this).create(ApiService.class);
         api.login(new LoginRequest(email, password)).enqueue(new Callback<AuthResponse>() {
             @Override
             public void onResponse(Call<AuthResponse> call, Response<AuthResponse> response) {
@@ -70,15 +74,25 @@ public class LoginActivity extends AppCompatActivity {
                     return;
                 }
 
-                AuthResponse user = response.body();
-                saveUser(user);
+                AuthResponse body = response.body();
 
-                toast("Xin chào " + user.getFullName());
+                // Token bắt buộc để gọi profile/booking...
+                if (body.getToken() == null || body.getToken().isEmpty()) {
+                    toast("Login fail: token null");
+                    return;
+                }
 
-                // chuyển về Home (đổi đúng Activity bạn đang dùng)
-                Intent i = new Intent(LoginActivity.this, HomeActivity.class);
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-                startActivity(i);
+                session.saveLogin(
+                        body.getToken(),
+                        body.getUserId(),
+                        body.getFullName(),
+                        body.getEmail(),
+                        body.getRole()
+                );
+
+                toast("Login OK");
+                startActivity(new Intent(LoginActivity.this, HomeActivity.class));
+                finish();
             }
 
             @Override
@@ -87,16 +101,6 @@ public class LoginActivity extends AppCompatActivity {
                 toast("Error: " + t.getMessage());
             }
         });
-    }
-
-    private void saveUser(AuthResponse user) {
-        SharedPreferences sp = getSharedPreferences("auth", MODE_PRIVATE);
-        sp.edit()
-                .putInt("userId", user.getUserId())
-                .putString("fullName", user.getFullName())
-                .putString("email", user.getEmail())
-                .putString("role", user.getRole())
-                .apply();
     }
 
     private String textOf(TextInputEditText e) {
